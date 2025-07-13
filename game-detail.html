@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Detail - GameHub</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="game-detail.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html">
+                    <i class="fas fa-gamepad"></i>
+                    <span>GameHub</span>
+                </a>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="index.html#categories" class="nav-link">Categories</a>
+                <a href="index.html#trending" class="nav-link">Games</a>
+                <a href="index.html#about" class="nav-link">About</a>
+            </div>
+            <div class="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Game Detail Section -->
+    <section class="game-detail">
+        <div class="container">
+            <div class="game-header">
+                <div class="breadcrumb">
+                    <a href="index.html">Home</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span id="gameTitle">Game Title</span>
+                </div>
+                <div class="game-actions">
+                    <button id="playBtn" class="btn btn-primary">
+                        <i class="fas fa-play"></i>
+                        Play Now
+                    </button>
+                    <button id="fullscreenBtn" class="btn btn-secondary">
+                        <i class="fas fa-expand"></i>
+                        Fullscreen
+                    </button>
+                    <button id="favoriteBtn" class="btn btn-outline">
+                        <i class="far fa-heart"></i>
+                        Favorite
+                    </button>
+                </div>
+            </div>
+
+            <div class="game-content">
+                <div class="game-main">
+                    <div class="game-frame-container">
+                        <div class="game-frame-wrapper">
+                            <iframe id="gameFrame" src="" frameborder="0" allowfullscreen></iframe>
+                            <div class="game-loading" id="gameLoading">
+                                <div class="loading-spinner"></div>
+                                <p>Loading game...</p>
+                            </div>
+                        </div>
+                        <div class="game-controls">
+                            <div class="control-info">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Press F11 for fullscreen or ESC to exit</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-sidebar">
+                    <div class="game-info">
+                        <div class="game-header-info">
+                            <h1 id="gameTitleHeader">Game Title</h1>
+                            <div class="game-meta">
+                                <div class="game-rating">
+                                    <div class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                    <span id="gameRating">4.0</span>
+                                </div>
+                                <div class="game-category">
+                                    <span id="gameCategory">Action</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="game-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-users"></i>
+                                <span>Players: <span id="gamePlayers">1</span></span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-signal"></i>
+                                <span>Difficulty: <span id="gameDifficulty">Medium</span></span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Duration: <span id="gameDuration">5-10 min</span></span>
+                            </div>
+                        </div>
+
+                        <div class="game-description">
+                            <h3>About This Game</h3>
+                            <p id="gameDescription">Game description will be loaded here...</p>
+                        </div>
+
+                        <div class="game-instructions">
+                            <h3>How to Play</h3>
+                            <ul id="gameInstructions">
+                                <li>Use arrow keys to move</li>
+                                <li>Press spacebar to jump</li>
+                                <li>Collect items to score points</li>
+                            </ul>
+                        </div>
+
+                        <div class="game-features">
+                            <h3>Features</h3>
+                            <ul id="gameFeatures">
+                                <li>High-quality graphics</li>
+                                <li>Smooth gameplay</li>
+                                <li>Multiple levels</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="game-share">
+                        <h3>Share This Game</h3>
+                        <div class="share-buttons">
+                            <button class="share-btn facebook" onclick="shareGame('facebook')">
+                                <i class="fab fa-facebook-f"></i>
+                                Facebook
+                            </button>
+                            <button class="share-btn twitter" onclick="shareGame('twitter')">
+                                <i class="fab fa-twitter"></i>
+                                Twitter
+                            </button>
+                            <button class="share-btn whatsapp" onclick="shareGame('whatsapp')">
+                                <i class="fab fa-whatsapp"></i>
+                                WhatsApp
+                            </button>
+                            <button class="share-btn copy" onclick="copyGameLink()">
+                                <i class="fas fa-link"></i>
+                                Copy Link
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Games -->
+            <div class="related-games">
+                <h2>Related Games</h2>
+                <div class="related-games-grid" id="relatedGames">
+                    <!-- Related games will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>GameHub</h3>
+                    <p>Your ultimate gaming destination</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="index.html#action">Action</a></li>
+                        <li><a href="index.html#puzzle">Puzzle</a></li>
+                        <li><a href="index.html#racing">Racing</a></li>
+                        <li><a href="index.html#strategy">Strategy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#help">Help Center</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                        <li><a href="#terms">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 GameHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="game-detail.js"></script>
+</body>
+</html> 
