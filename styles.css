@@ -299,7 +299,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .categories-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(6, 1fr);
     gap: 2rem;
     margin-top: 3rem;
 }
@@ -699,6 +699,15 @@ h1, h2, h3, h4, h5, h6 {
     
     .nav-toggle.active .bar:nth-child(3) {
         transform: translateY(-8px) rotate(-45deg);
+    }
+
+    .categories-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+@media (max-width: 600px) {
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
