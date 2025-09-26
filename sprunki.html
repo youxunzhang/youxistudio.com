@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sprunki 在线试玩</title>
+  <meta name="description" content="Sprunki 在线游玩页面，直接在浏览器中体验游戏。">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .game-embed { position: relative; width: 100%; padding-top: 56.25%; }
+    .game-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+    .sprunki-page { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+    .sprunki-page h1 { margin-bottom: 1.5rem; text-align: center; }
+    .embed-grid { display: grid; gap: 2rem; }
+    @media (min-width: 768px) {
+      .embed-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .iframe-wrapper { background: #0f172a; padding: 1rem; border-radius: 16px; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.25); }
+    .iframe-wrapper iframe { width: 100%; height: 100%; border: 0; border-radius: 12px; }
+    .iframe-wrapper p { margin-top: 0.75rem; font-size: 0.95rem; color: #94a3b8; text-align: center; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">Shadowmilk Scratch</a>
+      <nav class="site-nav" aria-label="主要导航">
+        <a href="index.html">首页</a>
+        <a href="game-detail.html?id=sprunki">Sprunki 详情</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="sprunki-page">
+    <h1>Sprunki 在线试玩专区</h1>
+    <div class="embed-grid">
+      <section class="iframe-wrapper" aria-label="GameFlare Sprunki">
+        <iframe src="https://www.gameflare.com/embed/sprunki/" frameborder="0" scrolling="no" width="800" height="635" allowfullscreen></iframe>
+        <p>来自 GameFlare 的 Sprunki 嵌入版本。</p>
+      </section>
+      <section class="iframe-wrapper" aria-label="Gamezhero Sprunki">
+        <iframe allow="autoplay" src="https://www.gamezhero.com/get-game-code/1a795f72604e4e1d35075019929d5b95" width="960" height="540" frameborder="0"></iframe>
+        <p>来自 Gamezhero 的 Sprunki 嵌入版本。</p>
+      </section>
+    </div>
+
+    <section class="iframe-wrapper" style="margin-top: 2rem;" aria-label="自适应 Sprunki"> 
+      <div class="game-embed">
+        <iframe src="https://www.gameflare.com/embed/sprunki/" allowfullscreen></iframe>
+      </div>
+      <p>响应式 Sprunki 体验，适配不同尺寸设备。</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>Shadowmilk Scratch Arcade · 一起守护 Scratch 的创意与乐趣</p>
+      <div class="footer-links">
+        <a href="https://scratch.mit.edu/parents" target="_blank" rel="noopener">家长指引</a>
+        <a href="https://scratch.mit.edu/community_guidelines" target="_blank" rel="noopener">社区守则</a>
+        <a href="mailto:hello@shadowmilk.org">联系站长</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
