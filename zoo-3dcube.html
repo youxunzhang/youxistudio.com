@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zoo 3D Cube 互动体验</title>
+  <meta name="description" content="Zoo 3D Cube 在线互动体验，在立方体中认识可爱的动物角色。">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .zoo-page { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+    .zoo-page h1 { margin-bottom: 1.5rem; text-align: center; }
+    .zoo-intro { margin: 0 auto 2rem; max-width: 820px; line-height: 1.75; color: #334155; text-align: center; }
+    .iframe-shell { position: relative; width: 100%; padding-top: 62.5%; border-radius: 18px; overflow: hidden; box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25); }
+    .iframe-shell iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">Shadowmilk Scratch</a>
+      <nav class="site-nav" aria-label="主要导航">
+        <a href="index.html">首页</a>
+        <a href="sprunki.html">Sprunki 专区</a>
+        <a href="game-detail.html?id=zoo-3dcube">游戏详情</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="zoo-page">
+    <h1>Zoo 3D Cube 在线互动</h1>
+    <section class="zoo-intro" aria-label="Zoo 3D Cube 介绍">
+      <p>Zoo 3D Cube 将常见动物与 3D 立方体玩具巧妙结合，通过简单的参数设置即可把猫、狗、猪、羊等角色映射到不同颜色的面上。你可以拖动、旋转立方体，从不同角度观察角色造型，同时配合色彩与背景的变化，获得轻松愉快的互动体验。</p>
+      <p>下方提供官方 Zoo.js 的在线演示版本，无需安装即可打开浏览器直接操作。推荐使用桌面浏览器获得更流畅的旋转体验，移动端同样支持多指手势缩放与旋转。</p>
+    </section>
+    <section class="iframe-shell" aria-label="Zoo 3D Cube 在线演示">
+      <iframe
+        id="zoo-3dcube"
+        src="https://zoo-js.github.io/3dcube/?red=cat&amp;white=dog&amp;blue=pig&amp;green=sheep&amp;orange=koala&amp;yellow=ant&amp;bg=*ffd8bf"
+        name="3dcube"
+        width="100%"
+        height="100%"
+        scrolling="no"
+        frameborder="0">
+      </iframe>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>Shadowmilk Scratch Arcade · 一起守护 Scratch 的创意与乐趣</p>
+      <div class="footer-links">
+        <a href="https://scratch.mit.edu/parents" target="_blank" rel="noopener">家长指引</a>
+        <a href="https://scratch.mit.edu/community_guidelines" target="_blank" rel="noopener">社区守则</a>
+        <a href="mailto:hello@shadowmilk.org">联系站长</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
