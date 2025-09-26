@@ -11,6 +11,8 @@
     .game-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
     .sprunki-page { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem 4rem; }
     .sprunki-page h1 { margin-bottom: 1.5rem; text-align: center; }
+    .sprunki-intro { margin: 0 auto 2.5rem; max-width: 860px; text-align: left; line-height: 1.75; color: #334155; }
+    .sprunki-intro h2 { font-size: 1.5rem; margin-bottom: 1rem; text-align: center; color: #0f172a; }
     .embed-grid { display: grid; gap: 2rem; }
     @media (min-width: 768px) {
       .embed-grid { grid-template-columns: repeat(2, 1fr); }
@@ -27,12 +29,18 @@
       <nav class="site-nav" aria-label="主要导航">
         <a href="index.html">首页</a>
         <a href="game-detail.html?id=sprunki">Sprunki 详情</a>
+        <a href="zoo-3dcube.html">Zoo 3D Cube</a>
       </nav>
     </div>
   </header>
 
   <main class="sprunki-page">
     <h1>Sprunki 在线试玩专区</h1>
+    <section class="sprunki-intro" aria-labelledby="sprunki-intro-heading">
+      <h2 id="sprunki-intro-heading">游戏介绍</h2>
+      <p>Sprunki 将节奏、解谜与即兴创作巧妙结合，玩家需要在充满未知的音轨中不断尝试，寻找正确的节奏组合，让角色顺利通关。与传统音游不同，Sprunki 不限制你必须照搬谱面，而是鼓励在探索中不断实验，感受音乐与互动之间的奇妙火花。</p>
+      <p>在本页面，你可以体验多个来源的 Sprunki 在线版本，包括桌面端的高清嵌入和适配移动设备的自适应窗口。挑选最适合你的版本，戴上耳机，跟随节奏一起沉浸在 Sprunki 的奇幻世界里。</p>
+    </section>
     <div class="embed-grid">
       <section class="iframe-wrapper" aria-label="GameFlare Sprunki">
         <iframe src="https://www.gameflare.com/embed/sprunki/" frameborder="0" scrolling="no" width="800" height="635" allowfullscreen></iframe>
