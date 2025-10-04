@@ -13,21 +13,66 @@
 </script>
 
 
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shadowmilk Scratch Arcade</title>
     <meta name="description" content="Shadowmilk Scratch Arcade 为你精选优质 Scratch 游戏，直接在线畅玩，体验创意与乐趣。">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="home-landing">
-    <main class="home-launcher" aria-labelledby="homeHeading">
-        <header class="home-launcher__header">
-            <p class="home-launcher__eyebrow">SHADOWMILK SCRATCH COLLECTION</p>
-            <h1 id="homeHeading">选择一款游戏立即开玩</h1>
-            <p class="home-launcher__description">点击任意图标即可进入游戏详情并开始游玩，我们会持续更新最新、最好玩的 Scratch 作品。</p>
-        </header>
-        <section class="icon-wall" id="gamesGrid" aria-label="精选 Scratch 游戏列表"></section>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="logo" href="index.html">Shadowmilk Scratch</a>
+            <nav class="site-nav" aria-label="主要导航">
+                <a href="#games">全部游戏</a>
+                <a href="https://scratch.mit.edu" target="_blank" rel="noopener">Scratch 官网</a>
+                <a href="game-detail.html?id=paper-minecraft">热门推荐</a>
+                <a href="sprunki.html">Sprunki 专区</a>
+                <a href="zoo-3dcube.html">Zoo 3D Cube</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page" id="home">
+        <div class="container">
+            <section class="intro">
+                <p class="eyebrow">SHADOWMILK SCRATCH COLLECTION</p>
+                <h1>精选 Scratch 游戏，一站式畅玩</h1>
+                <p>我们挑选了社区里口碑与人气俱佳的 Scratch 作品，提供统一的清爽界面、操作说明与快速入口，让你像访问 takecareofshadowmilk.org/scratch 一样，轻松探索 Scratch 的无限创意。</p>
+            </section>
+
+            <section class="tools" aria-label="筛选工具">
+                <div class="search-row">
+                    <input id="searchInput" class="search-input" type="search" placeholder="搜索游戏名称或标签..." autocomplete="off" aria-label="搜索 Scratch 游戏">
+                    <p id="resultsCount" class="results-count" aria-live="polite"></p>
+                </div>
+                <div class="filter-row" role="tablist" aria-label="游戏分类">
+                    <button type="button" class="filter-button is-active" data-filter="all" role="tab" aria-selected="true">全部</button>
+                    <button type="button" class="filter-button" data-filter="adventure" role="tab" aria-selected="false">冒险</button>
+                    <button type="button" class="filter-button" data-filter="arcade" role="tab" aria-selected="false">街机</button>
+                    <button type="button" class="filter-button" data-filter="platformer" role="tab" aria-selected="false">平台跳跃</button>
+                    <button type="button" class="filter-button" data-filter="puzzle" role="tab" aria-selected="false">益智</button>
+                    <button type="button" class="filter-button" data-filter="creative" role="tab" aria-selected="false">创意</button>
+                </div>
+            </section>
+
+            <section class="games" id="games" aria-live="polite">
+                <div class="games-grid" id="gamesGrid"></div>
+            </section>
+        </div>
     </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>Shadowmilk Scratch Arcade · 一起守护 Scratch 的创意与乐趣</p>
+            <div class="footer-links">
+                <a href="https://scratch.mit.edu/parents" target="_blank" rel="noopener">家长指引</a>
+                <a href="https://scratch.mit.edu/community_guidelines" target="_blank" rel="noopener">社区守则</a>
+                <a href="mailto:hello@shadowmilk.org">联系站长</a>
+            </div>
+        </div>
+    </footer>
 
     <script src="games-data.js"></script>
     <script src="script.js"></script>
