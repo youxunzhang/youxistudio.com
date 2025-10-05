@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scratch 游戏抓取工具 | Shadowmilk Scratch</title>
+    <meta name="description" content="在线抓取 Scratch 社区的热门项目，快速获取游戏名称、链接、嵌入代码与封面图片地址。">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="logo" href="index.html">Shadowmilk Scratch</a>
+            <nav class="site-nav" aria-label="主要导航">
+                <a href="index.html#games">全部游戏</a>
+                <a href="https://scratch.mit.edu" target="_blank" rel="noopener">Scratch 官网</a>
+                <a href="game-detail.html?id=paper-minecraft">热门推荐</a>
+                <a href="sprunki.html">Sprunki 专区</a>
+                <a href="zoo-3dcube.html">Zoo 3D Cube</a>
+                <a href="scratch-scraper.html" aria-current="page">游戏抓取</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page scraper-page">
+        <div class="container">
+            <section class="scraper-intro">
+                <p class="eyebrow">SCRATCH DATA TOOLKIT</p>
+                <h1>即时抓取 Scratch 游戏关键信息</h1>
+                <p>通过官方公开 API，一键获取 Scratch 社区的热门或最新项目。输入关键词即可提取游戏名称、项目链接、嵌入 IFrame 地址以及封面图片链接，并支持复制导出，方便整理与分享。</p>
+            </section>
+
+            <form id="scraperForm" class="scraper-form" aria-label="Scratch 游戏抓取表单">
+                <div class="field-group">
+                    <label class="field-label" for="queryInput">关键词</label>
+                    <input id="queryInput" name="query" class="field-input" type="search" placeholder="例如：platformer、minecraft 或 留空抓取全部" autocomplete="off">
+                </div>
+                <div class="field-row">
+                    <div class="field-group">
+                        <label class="field-label" for="modeSelect">排序模式</label>
+                        <select id="modeSelect" name="mode" class="field-input">
+                            <option value="trending">社区热议（trending）</option>
+                            <option value="popular">最受欢迎（popular）</option>
+                            <option value="recent">最新发布（recent）</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label" for="limitInput">抓取数量</label>
+                        <input id="limitInput" name="limit" class="field-input" type="number" min="1" max="40" value="20">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label" for="offsetInput">起始位置</label>
+                        <input id="offsetInput" name="offset" class="field-input" type="number" min="0" value="0">
+                    </div>
+                </div>
+                <button type="submit" class="primary-button">开始抓取</button>
+            </form>
+
+            <p id="scraperStatus" class="scraper-status" aria-live="polite"></p>
+
+            <section class="scraper-results" aria-live="polite">
+                <div class="table-wrapper" role="region" aria-label="抓取结果表格" tabindex="0">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">游戏名称</th>
+                                <th scope="col">Scratch 链接</th>
+                                <th scope="col">IFrame 链接</th>
+                                <th scope="col">封面图片</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <p class="scraper-note">说明：数据来自 Scratch 官方公开接口 <code>api.scratch.mit.edu</code>。若需要查看更多项目，可调整抓取数量与起始位置。嵌入链接可直接用于 <code>&lt;iframe&gt;</code> 内嵌展示，封面图片为 480×360 分辨率的 PNG 文件。</p>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>Shadowmilk Scratch Arcade · 一起守护 Scratch 的创意与乐趣</p>
+            <div class="footer-links">
+                <a href="https://scratch.mit.edu/parents" target="_blank" rel="noopener">家长指引</a>
+                <a href="https://scratch.mit.edu/community_guidelines" target="_blank" rel="noopener">社区守则</a>
+                <a href="mailto:hello@shadowmilk.org">联系站长</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scratch-scraper.js"></script>
+</body>
+</html>
