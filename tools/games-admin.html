@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Games Admin · 半自动采集/封面下载/合并库</title>
+<style>
+  :root{--bd:#e5e7eb;--txt:#0f172a;--mut:#64748b;--bg:#f8fafc}
+  *{box-sizing:border-box}body{font:15px/1.6 system-ui,Segoe UI,Arial;margin:24px;background:var(--bg);color:var(--txt)}
+  h1{margin:0 0 12px} .wrap{max-width:1100px;margin:0 auto}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  input,select,textarea,button{border:1px solid var(--bd);border-radius:10px;padding:10px 12px;background:#fff}
+  input,select,textarea{width:100%}
+  textarea{font:13px ui-monospace,Consolas,monospace;min-height:160px}
+  button{cursor:pointer;background:#fff}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .card{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:14px}
+  .label{font-size:12px;color:var(--mut);margin-bottom:6px}
+  .small{font-size:12px;color:var(--mut)}
+  .flex{display:flex;gap:8px;flex-wrap:wrap}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  img{width:160px;height:160px;object-fit:cover;border-radius:12px;border:1px solid var(--bd)}
+  .ok{color:#16a34a}.warn{color:#ca8a04}.err{color:#dc2626}
+</style>
+
+<div class="wrap">
+  <h1>📚 Games Admin · 半自动采集 / 封面下载 / 合并库</h1>
+
+  <div class="card">
+    <div class="label">基础设置</div>
+    <div class="grid">
+      <div>
+        <div class="label">Worker 基地址（必填）</div>
+        <input id="worker" placeholder="https://你的-worker.workers.dev" />
+      </div>
+      <div>
+        <div class="label">在线库地址（/data/games.json）</div>
+        <input id="lib" placeholder="https://youxistudio.com/data/games.json" />
+      </div>
+      <div>
+        <div class="label">本地封面相对目录</div>
+        <input id="coverBase" value="/img/covers/" />
+      </div>
+      <div class="flex">
+        <div style="flex:1">
+          <div class="label">封面扩展名</div>
+          <select id="imgExt"><option>jpg</option><option>webp</option><option>png</option></select>
+        </div>
+        <div style="flex:2">
+          <div class="label">并发抓取（批量时）</div>
+          <input id="concurrency" value="4" />
+        </div>
+      </div>
+    </div>
+    <div class="small" style="margin-top:6px">提示：确保 Worker 已实现 <code>GET /?url=</code> 与 <code>GET /cache-image?src=&id=&ext=</code> 两个端点。</div>
+  </div>
+
+  <div class="card">
+    <div class="label">单条采集</div>
+    <div class="row">
+      <input id="pageUrl" placeholder="粘贴游戏详情页 URL（如 crazygames/poki/y8/...）" />
+      <button id="btnFetch">抓取</button>
+      <button id="btnReset">清空</button>
+    </div>
+
+    <div class="grid" style="margin-top:10px">
+      <div>
+        <div class="label">采集结果（可编辑）</div>
+        <div class="grid">
+          <div>
+            <div class="label">provider</div>
+            <input id="provider" placeholder="crazygames / gamedistribution / poki / y8 / generic" />
+          </div>
+          <div>
+            <div class="label">id（自动生成，可改）</div>
+            <input id="gid" placeholder="cg-xxxxxxx" />
+          </div>
+        </div>
+
+        <div class="label" style="margin-top:8px">title</div>
+        <input id="title" />
+
+        <div class="label" style="margin-top:8px">description</div>
+        <textarea id="desc"></textarea>
+
+        <div class="label" style="margin-top:8px">sourceUrl</div>
+        <input id="sourceUrl" />
+
+        <div class="grid" style="margin-top:8px">
+          <div>
+            <div class="label">外链封面（抓取返回）</div>
+            <input id="coverRemote" placeholder="https://..." />
+          </div>
+          <div>
+            <div class="label">本地封面（将写入 JSON）</div>
+            <input id="coverLocal" placeholder="/img/covers/{id}.jpg" />
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="btnDlCover">⬇️ 下载封面（文件名自动对齐）</button>
+          <button id="btnUseLocal">🖼️ 设置本地封面路径</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="label">JSON 预览（会用于合并）</div>
+        <textarea id="jsonBox"></textarea>
+        <div class="actions">
+          <button id="btnMerge">💾 合并并下载新的 games.json</button>
+          <button id="btnDedupe">🧹 仅去重并下载</button>
+        </div>
+        <div class="small" style="margin-top:6px">合并规则：优先以 <code>id</code>、次以 <code>sourceUrl</code> 去重；更新时间戳。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label">批量（可选）— 每行一个 URL</div>
+    <textarea id="bulkInput" placeholder="https://www.crazygames.com/game/xxx
+https://poki.com/en/g/yyy
+https://www.y8.com/games/zzz"></textarea>
+    <div class="actions">
+      <button id="btnBulk">🚀 批量抓取→合并→下载 games.json</button>
+    </div>
+  </div>
+
+  <pre id="log" class="card" style="white-space:pre-wrap"></pre>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const nowISO = () => new Date().toISOString();
+const clean = s => (s||'').toString().replace(/\s+/g,' ').trim();
+const sleep = ms => new Promise(r=>setTimeout(r, ms));
+
+// 简单前缀推断
+function providerPrefix(u=''){
+  const url = (u||'').toLowerCase();
+  if (url.includes('crazygames.com')) return 'cg';
+  if (url.includes('gamedistribution.com')) return 'gd';
+  if (url.includes('poki.com')) return 'pk';
+  if (url.includes('y8.com')) return 'y8';
+  return 'gen';
+}
+
+// 浏览器 SHA-1
+async function sha1hex(str){
+  const enc = new TextEncoder().encode(str);
+  const buf = await crypto.subtle.digest('SHA-1', enc);
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function log(msg, cls=''){ const el=$('#log'); el.innerHTML += (cls?`<span class="${cls}">`:'') + msg + (cls?'</span>':'') + '\n'; el.scrollTop = el.scrollHeight; }
+function setJSON(obj){ $('#jsonBox').value = JSON.stringify(obj, null, 2); }
+function getJSON(){ try{ return JSON.parse($('#jsonBox').value || '{}') }catch{ return null } }
+
+async function fetchOne(pageUrl){
+  const worker = clean($('#worker').value);
+  if (!worker) { log('❌ 请先填写 Worker 基地址','err'); return null; }
+  const u = `${worker}/?url=${encodeURIComponent(pageUrl)}`;
+  const r = await fetch(u);
+  if (!r.ok){ log(`❌ 抓取失败 ${r.status} ${pageUrl}`,'err'); return null; }
+  const d = await r.json();
+  // 组装最小字段
+  const prov = d.provider || providerPrefix(pageUrl);
+  const prefix = providerPrefix(pageUrl);
+  const hash8 = (await sha1hex(d.sourceUrl || pageUrl)).slice(0,8);
+  const id = `${prefix}-${hash8}`;
+  const ext = clean($('#imgExt').value || 'jpg').toLowerCase();
+  const obj = {
+    id,
+    provider: prov,
+    sourceUrl: d.sourceUrl || pageUrl,
+    title: clean(d.title),
+    description: clean(d.description),
+    cover: d.cover || '',
+    createdAt: nowISO(),
+    updatedAt: nowISO(),
+  };
+  // 回填 UI
+  $('#provider').value = obj.provider;
+  $('#gid').value = obj.id;
+  $('#title').value = obj.title || '';
+  $('#desc').value = obj.description || '';
+  $('#sourceUrl').value = obj.sourceUrl || '';
+  $('#coverRemote').value = d.cover || '';
+  $('#coverLocal').value = (clean($('#coverBase').value)||'/img/covers/') + `${obj.id}.${ext}`;
+  setJSON(obj);
+  log(`✅ 抓取成功：${obj.id}  ${obj.title||''}`, 'ok');
+  return obj;
+}
+
+function toLocalCoverPath(id){
+  const base = clean($('#coverBase').value) || '/img/covers/';
+  const ext = clean($('#imgExt').value || 'jpg').toLowerCase();
+  return base.replace(/\/+$/,'/') + `${id}.${ext}`;
+}
+
+async function downloadCover(single){
+  const worker = clean($('#worker').value);
+  const ext = clean($('#imgExt').value || 'jpg').toLowerCase();
+  if(!worker){ log('❌ Worker 未设置','err'); return; }
+  if(!single.cover){ log('❌ 采集结果缺少外链封面 cover','err'); return; }
+  const url = `${worker}/cache-image?src=${encodeURIComponent(single.cover)}&id=${encodeURIComponent(single.id)}&ext=${encodeURIComponent(ext)}`;
+  window.open(url, '_blank'); // 直接触发下载
+  log(`⬇️ 已触发封面下载：${single.id}.${ext}`);
+}
+
+async function loadLibrary(){
+  const lib = clean($('#lib').value);
+  if(!lib){ log('⚠️ 在线库地址为空，使用空库','warn'); return {version:2,updatedAt:nowISO(),games:[]} }
+  try{
+    const r = await fetch(lib, {cache:'no-store'});
+    if (!r.ok) throw new Error(r.status);
+    const j = await r.json();
+    j.version = j.version || 2;
+    j.updatedAt = nowISO();
+    j.games = Array.isArray(j.games) ? j.games : [];
+    log(`📖 已加载在线库：${j.games.length} 条`);
+    return j;
+  }catch(e){
+    log('⚠️ 读取在线库失败，使用空库','warn');
+    return {version:2,updatedAt:nowISO(),games:[]};
+  }
+}
+
+function dedupePush(arr, obj){
+  const byId = new Map(arr.map(x=>[x.id,1]));
+  const bySrc = new Map(arr.map(x=>[(x.sourceUrl||'').toLowerCase(),1]));
+  if (obj.id && byId.has(obj.id)) {
+    // 替换更新（以 id 为主）
+    const i = arr.findIndex(x=>x.id===obj.id);
+    arr[i] = {...arr[i], ...obj, updatedAt: nowISO()};
+    return;
+  }
+  if (obj.sourceUrl && bySrc.has(obj.sourceUrl.toLowerCase())) {
+    const i = arr.findIndex(x=>(x.sourceUrl||'').toLowerCase()===obj.sourceUrl.toLowerCase());
+    arr[i] = {...arr[i], ...obj, updatedAt: nowISO()};
+    return;
+  }
+  arr.push(obj);
+}
+
+function downloadFile(name, text){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], {type:'application/json'}));
+  a.download = name;
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+$('#btnFetch').onclick = async ()=>{
+  const u = clean($('#pageUrl').value);
+  if (!u) { log('❌ 请输入游戏详情页 URL','err'); return; }
+  await fetchOne(u);
+};
+
+$('#btnReset').onclick = ()=>{
+  ['provider','gid','title','desc','sourceUrl','coverRemote','coverLocal','jsonBox','pageUrl'].forEach(id=>{$('#'+id).value='';});
+  log('🧽 已清空表单');
+};
+
+$('#btnDlCover').onclick = async ()=>{
+  const obj = getJSON();
+  if(!obj){ log('❌ JSON 无效','err'); return; }
+  await downloadCover(obj);
+};
+
+$('#btnUseLocal').onclick = ()=>{
+  const obj = getJSON(); if(!obj){ log('❌ JSON 无效','err'); return; }
+  const id = clean($('#gid').value)||obj.id;
+  const lp = toLocalCoverPath(id);
+  $('#coverLocal').value = lp;
+  obj.id = id;
+  obj.cover = lp;
+  setJSON(obj);
+  log(`🖼️ 已设置本地封面路径：${lp}`, 'ok');
+};
+
+$('#btnMerge').onclick = async ()=>{
+  const obj = getJSON();
+  if(!obj){ log('❌ JSON 无效','err'); return; }
+  // 同步表单可能的修改
+  obj.provider = clean($('#provider').value) || obj.provider;
+  obj.id = clean($('#gid').value) || obj.id;
+  obj.title = clean($('#title').value) || obj.title;
+  obj.description = clean($('#desc').value) || obj.description;
+  obj.sourceUrl = clean($('#sourceUrl').value) || obj.sourceUrl;
+  obj.cover = clean($('#coverLocal').value) || obj.cover || clean($('#coverRemote').value);
+  obj.updatedAt = nowISO();
+  if(!obj.id && obj.sourceUrl) {
+    const prefix = providerPrefix(obj.sourceUrl);
+    obj.id = `${prefix}-${(await sha1hex(obj.sourceUrl)).slice(0,8)}`;
+  }
+  const lib = await loadLibrary();
+  dedupePush(lib.games, obj);
+  lib.updatedAt = nowISO();
+  const text = JSON.stringify(lib, null, 2);
+  downloadFile('games.json', text);
+  log(`💾 已合并并下载新的 games.json（共 ${lib.games.length} 条）`, 'ok');
+};
+
+$('#btnDedupe').onclick = async ()=>{
+  const lib = await loadLibrary();
+  // 简单去重：优先 id，再 sourceUrl
+  const seenId=new Set(), seenSrc=new Set(), out=[];
+  for(const g of lib.games){
+    if(g.id && seenId.has(g.id)) continue;
+    const s=(g.sourceUrl||'').toLowerCase();
+    if(s && seenSrc.has(s)) continue;
+    if(g.id) seenId.add(g.id);
+    if(s) seenSrc.add(s);
+    out.push(g);
+  }
+  lib.games = out;
+  lib.updatedAt = nowISO();
+  const text = JSON.stringify(lib, null, 2);
+  downloadFile('games.json', text);
+  log(`🧹 已去重并下载（剩 ${lib.games.length} 条）`, 'ok');
+};
+
+// —— 批量 —— //
+async function pLimit(list, limit, worker){
+  const ret = []; let i=0; const running = new Set();
+  async function runOne(item){
+    const p = Promise.resolve().then(()=>worker(item)).then(v=>ret.push(v)).finally(()=>running.delete(p));
+    running.add(p);
+    if(running.size >= limit) await Promise.race(running);
+  }
+  for(const it of list){ await runOne(it); }
+  await Promise.allSettled(running);
+  return ret;
+}
+$('#btnBulk').onclick = async ()=>{
+  const lines = $('#bulkInput').value.split(/\r?\n/).map(s=>clean(s)).filter(Boolean);
+  if(!lines.length){ log('❌ 没有可抓取的 URL','err'); return; }
+  const lib = await loadLibrary();
+  const limit = Math.max(1, Math.min(8, parseInt($('#concurrency').value || '4', 10)));
+  log(`🚀 批量开始，共 ${lines.length} 条，并发 ${limit}`);
+  let ok=0, fail=0;
+  await pLimit(lines, limit, async (u)=>{
+    try{
+      const one = await fetchOne(u);
+      if(!one) { fail++; return; }
+      // 自动改为本地封面路径（可先不下载）
+      one.cover = toLocalCoverPath(one.id);
+      dedupePush(lib.games, one);
+      ok++;
+      await sleep(120); // 轻微节流
+    }catch{ fail++; }
+  });
+  lib.updatedAt = nowISO();
+  const text = JSON.stringify(lib, null, 2);
+  downloadFile('games.json', text);
+  log(`✅ 批量完成：成功 ${ok}，失败 ${fail}。已下载新的 games.json（共 ${lib.games.length} 条）`, 'ok');
+};
+
+// 默认值（可改成你的）
+$('#worker').value = 'https://throbbing-frost-ec92.youxun2023.workers.dev';
+$('#lib').value = 'https://youxistudio.com/data/games.json';
+</script>
+</html>
