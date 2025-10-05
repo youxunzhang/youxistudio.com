@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scratch 游戏抓取工具 | Shadowmilk Scratch</title>
+    <meta name="description" content="在线抓取 Scratch 社区的项目数据，自动提取游戏名称、站点链接、嵌入代码与封面图片地址。">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="logo" href="index.html">Shadowmilk Scratch</a>
+            <nav class="site-nav" aria-label="主要导航">
+                <a href="index.html#games">全部游戏</a>
+                <a href="https://scratch.mit.edu" target="_blank" rel="noopener">Scratch 官网</a>
+                <a href="game-detail.html?id=paper-minecraft">热门推荐</a>
+                <a href="sprunki.html">Sprunki 专区</a>
+                <a href="zoo-3dcube.html">Zoo 3D Cube</a>
+                <a href="scratch-scraper.html" aria-current="page">游戏抓取</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page scraper-page">
+        <div class="container">
+            <section class="scraper-intro">
+                <p class="eyebrow">SCRATCH DATA TOOLKIT</p>
+                <h1>一键抓取 Scratch 游戏核心信息</h1>
+                <p>无需输入关键词或筛选条件，系统会自动遍历 Scratch 官网公开的 Explore 项目列表，提取游戏名称、项目链接、嵌入 IFrame 链接以及封面图片地址。若部分字段不存在，将以空白展示，方便后续整理。</p>
+                <button id="refreshButton" class="primary-button" type="button">重新抓取全部游戏</button>
+            </section>
+
+            <p id="scraperStatus" class="scraper-status" aria-live="polite"></p>
+
+            <section class="scraper-results" aria-live="polite">
+                <div class="table-wrapper" role="region" aria-label="抓取结果表格" tabindex="0">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">游戏名称</th>
+                                <th scope="col">Scratch 链接</th>
+                                <th scope="col">IFrame 链接</th>
+                                <th scope="col">封面图片</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <p class="scraper-note">说明：数据来自 Scratch 官方公开接口 <code>api.scratch.mit.edu</code>。系统会自动分页抓取直到没有更多结果或检测到重复项目为止，确保覆盖官方 Explore 列表中的游戏条目。</p>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>Shadowmilk Scratch Arcade · 一起守护 Scratch 的创意与乐趣</p>
+            <div class="footer-links">
+                <a href="https://scratch.mit.edu/parents" target="_blank" rel="noopener">家长指引</a>
+                <a href="https://scratch.mit.edu/community_guidelines" target="_blank" rel="noopener">社区守则</a>
+                <a href="mailto:hello@shadowmilk.org">联系站长</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scratch-scraper.js"></script>
+</body>
+</html>
