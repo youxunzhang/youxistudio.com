@@ -5,6 +5,7 @@ const MAX_PAGES = 50;
 const refreshButton = document.getElementById('refreshButton');
 const statusEl = document.getElementById('scraperStatus');
 const resultsBody = document.getElementById('resultsBody');
+const defaultButtonText = refreshButton?.textContent ?? '';
 
 if (!refreshButton || !statusEl || !resultsBody) {
   throw new Error('Scratch 抓取页面缺少必要的 DOM 元素。');
@@ -15,6 +16,31 @@ const copyFeedbackDuration = 2000;
 function setStatus(message, tone = 'muted') {
   statusEl.textContent = message;
   statusEl.dataset.tone = tone;
+}
+
+function setButtonLoading(isLoading) {
+  if (isLoading) {
+    refreshButton.classList.add('is-loading');
+    refreshButton.disabled = true;
+    refreshButton.setAttribute('aria-busy', 'true');
+    refreshButton.textContent = '抓取中…';
+  } else {
+    refreshButton.classList.remove('is-loading');
+    refreshButton.disabled = false;
+    refreshButton.removeAttribute('aria-busy');
+    refreshButton.textContent = defaultButtonText || '重新抓取全部游戏';
+  }
+}
+
+function renderLoadingRow() {
+  resultsBody.innerHTML = '';
+  const row = document.createElement('tr');
+  const cell = document.createElement('td');
+  cell.colSpan = 5;
+  cell.className = 'loading-cell';
+  cell.textContent = '正在重新抓取，请稍候…';
+  row.append(cell);
+  resultsBody.append(row);
 }
 
 async function copyToClipboard(text) {
@@ -172,9 +198,9 @@ async function fetchProjects(offset) {
 }
 
 async function loadAllProjects() {
-  resultsBody.innerHTML = '';
-  setStatus('正在自动抓取 Scratch 项目信息，请稍候...', 'loading');
-  refreshButton.disabled = true;
+  setStatus('正在自动抓取 Scratch 项目信息，请稍候…', 'loading');
+  setButtonLoading(true);
+  renderLoadingRow();
 
   const allProjects = [];
   const seenIds = new Set();
@@ -223,7 +249,7 @@ async function loadAllProjects() {
       renderProjects([]);
     }
   } finally {
-    refreshButton.disabled = false;
+    setButtonLoading(false);
   }
 }
 
