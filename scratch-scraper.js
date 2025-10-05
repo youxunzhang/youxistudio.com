@@ -1,30 +1,20 @@
 const API_ENDPOINT = 'https://api.scratch.mit.edu/explore/projects';
-const DEFAULT_LIMIT = 20;
-const MAX_LIMIT = 40;
+const PAGE_SIZE = 40;
+const MAX_PAGES = 50;
 
-const form = document.getElementById('scraperForm');
-const queryInput = document.getElementById('queryInput');
-const modeSelect = document.getElementById('modeSelect');
-const limitInput = document.getElementById('limitInput');
-const offsetInput = document.getElementById('offsetInput');
+const refreshButton = document.getElementById('refreshButton');
 const statusEl = document.getElementById('scraperStatus');
 const resultsBody = document.getElementById('resultsBody');
+
+if (!refreshButton || !statusEl || !resultsBody) {
+  throw new Error('Scratch 抓取页面缺少必要的 DOM 元素。');
+}
 
 const copyFeedbackDuration = 2000;
 
 function setStatus(message, tone = 'muted') {
   statusEl.textContent = message;
   statusEl.dataset.tone = tone;
-}
-
-function clampLimit(value) {
-  if (Number.isNaN(value)) return DEFAULT_LIMIT;
-  return Math.min(Math.max(value, 1), MAX_LIMIT);
-}
-
-function clampOffset(value) {
-  if (Number.isNaN(value) || value < 0) return 0;
-  return value;
 }
 
 async function copyToClipboard(text) {
@@ -76,67 +66,82 @@ function createCopyButton(value) {
   return button;
 }
 
-function renderProjects(projects, offset = 0) {
+function appendLinkOrEmpty(cell, url, copyValue = url) {
+  if (!url) {
+    cell.textContent = '';
+    return;
+  }
+
+  const link = createLink(url);
+  cell.append(link);
+
+  if (copyValue) {
+    cell.append(createCopyButton(copyValue));
+  }
+}
+
+function renderProjects(projects) {
   resultsBody.innerHTML = '';
 
   if (!projects.length) {
     const emptyRow = document.createElement('tr');
     const cell = document.createElement('td');
     cell.colSpan = 5;
-    cell.textContent = '未找到符合条件的 Scratch 项目。请尝试调整关键词或分页参数。';
+    cell.textContent = '未找到任何 Scratch 项目。';
     emptyRow.append(cell);
     resultsBody.append(emptyRow);
     return;
   }
 
   const fragment = document.createDocumentFragment();
-  let rowNumber = 0;
 
-  projects.forEach((project) => {
+  projects.forEach((project, index) => {
     const rawId = project?.id;
-    if (rawId === undefined || rawId === null) {
-      return;
-    }
+    const id = rawId === undefined || rawId === null ? '' : String(rawId);
+    const title = project?.title ?? '';
+    const username = project?.author?.username ?? '';
 
-    const id = String(rawId);
-    const title = project?.title ?? '未命名项目';
-    const username = project?.author?.username ?? 'Scratch Creator';
-
-    const projectUrl = `https://scratch.mit.edu/projects/${id}`;
-    const iframeUrl = `${projectUrl}/embed`;
-    const imageUrl = `https://cdn2.scratch.mit.edu/get_image/project/${id}_480x360.png`;
+    const projectUrl = id ? `https://scratch.mit.edu/projects/${id}` : '';
+    const iframeUrl = projectUrl ? `${projectUrl}/embed` : '';
+    const imageUrl = id ? `https://cdn2.scratch.mit.edu/get_image/project/${id}_480x360.png` : '';
 
     const row = document.createElement('tr');
 
     const indexCell = document.createElement('td');
-    rowNumber += 1;
-    indexCell.textContent = String(offset + rowNumber);
+    indexCell.textContent = String(index + 1);
     row.append(indexCell);
 
     const titleCell = document.createElement('td');
-    const titleLink = createLink(projectUrl, title);
-    titleLink.classList.add('project-title');
+    if (projectUrl) {
+      const titleLink = createLink(projectUrl, title || '未命名项目');
+      titleLink.classList.add('project-title');
+      titleCell.append(titleLink);
+    } else {
+      titleCell.textContent = title || '未命名项目';
+    }
 
-    const author = document.createElement('p');
-    author.className = 'project-author';
-    author.textContent = `by ${username}`;
+    if (username) {
+      const author = document.createElement('p');
+      author.className = 'project-author';
+      author.textContent = `by ${username}`;
+      titleCell.append(author);
+    }
 
-    titleCell.append(titleLink, author);
     row.append(titleCell);
 
     const projectCell = document.createElement('td');
     projectCell.className = 'mono-cell';
-    projectCell.append(createLink(projectUrl, projectUrl), createCopyButton(projectUrl));
+    appendLinkOrEmpty(projectCell, projectUrl);
     row.append(projectCell);
 
     const iframeCell = document.createElement('td');
     iframeCell.className = 'mono-cell';
-    iframeCell.append(createLink(iframeUrl, iframeUrl), createCopyButton(`<iframe src="${iframeUrl}" allowfullscreen></iframe>`));
+    appendLinkOrEmpty(iframeCell, iframeUrl, iframeUrl ? `<iframe src="${iframeUrl}" allowfullscreen></iframe>` : '');
     row.append(iframeCell);
 
     const imageCell = document.createElement('td');
     imageCell.className = 'mono-cell';
-    imageCell.append(createLink(imageUrl, imageUrl), createCopyButton(imageUrl));
+    appendLinkOrEmpty(imageCell, imageUrl);
     row.append(imageCell);
 
     fragment.append(row);
@@ -145,12 +150,12 @@ function renderProjects(projects, offset = 0) {
   resultsBody.append(fragment);
 }
 
-async function fetchProjects(query, mode, limit, offset) {
+async function fetchProjects(offset) {
   const params = new URLSearchParams({
-    limit: String(limit),
-    mode,
+    limit: String(PAGE_SIZE),
+    mode: 'trending',
     offset: String(offset),
-    q: query || '*'
+    q: '*'
   });
 
   const response = await fetch(`${API_ENDPOINT}?${params.toString()}`, {
@@ -166,38 +171,61 @@ async function fetchProjects(query, mode, limit, offset) {
   return response.json();
 }
 
-async function loadProjects() {
-  const query = queryInput.value.trim();
-  const mode = modeSelect.value;
-  const limit = clampLimit(parseInt(limitInput.value, 10));
-  const offset = clampOffset(parseInt(offsetInput.value, 10));
+async function loadAllProjects() {
+  resultsBody.innerHTML = '';
+  setStatus('正在自动抓取 Scratch 项目信息，请稍候...', 'loading');
+  refreshButton.disabled = true;
 
-  limitInput.value = String(limit);
-  offsetInput.value = String(offset);
-
-  setStatus('正在抓取 Scratch 项目信息，请稍候...', 'loading');
+  const allProjects = [];
+  const seenIds = new Set();
 
   try {
-    const projects = await fetchProjects(query, mode, limit, offset);
-    renderProjects(projects, offset);
+    for (let page = 0; page < MAX_PAGES; page += 1) {
+      const offset = page * PAGE_SIZE;
+      const batch = await fetchProjects(offset);
 
-    if (projects.length) {
-      const rangeLabel = `${offset + 1} - ${offset + projects.length}`;
-      setStatus(`抓取完成，共获得 ${projects.length} 个项目（位置 ${rangeLabel}）。`, 'success');
-    } else {
-      setStatus('抓取完成，但没有找到相关项目。', 'muted');
+      if (!Array.isArray(batch) || !batch.length) {
+        break;
+      }
+
+      const uniqueBatch = batch.filter((project) => {
+        const id = project?.id;
+        if (id === undefined || id === null) {
+          return true;
+        }
+        if (seenIds.has(id)) {
+          return false;
+        }
+        seenIds.add(id);
+        return true;
+      });
+
+      allProjects.push(...uniqueBatch);
+      renderProjects(allProjects);
+      setStatus(`已抓取 ${allProjects.length} 个项目，正在继续加载更多……`, 'loading');
+
+      if (batch.length < PAGE_SIZE) {
+        break;
+      }
     }
+
+    if (!allProjects.length) {
+      setStatus('未抓取到任何项目，请稍后重试。', 'muted');
+      renderProjects([]);
+      return;
+    }
+
+    setStatus(`抓取完成，共获得 ${allProjects.length} 个项目。`, 'success');
   } catch (error) {
     console.error(error);
     setStatus(error.message || '抓取过程中出现问题，请稍后重试。', 'error');
-    renderProjects([], offset);
+    if (!allProjects.length) {
+      renderProjects([]);
+    }
+  } finally {
+    refreshButton.disabled = false;
   }
 }
-
-form.addEventListener('submit', (event) => {
-  event.preventDefault();
-  loadProjects();
-});
 
 resultsBody.addEventListener('click', async (event) => {
   const button = event.target.closest('.copy-button');
@@ -219,6 +247,10 @@ resultsBody.addEventListener('click', async (event) => {
   }, copyFeedbackDuration);
 });
 
+refreshButton.addEventListener('click', () => {
+  loadAllProjects();
+});
+
 window.addEventListener('DOMContentLoaded', () => {
-  loadProjects();
+  loadAllProjects();
 });
