@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏软件导航 | Shadowmilk Scratch</title>
+    <meta name="description" content="精选全球热门的游戏启动器、创作工具、云游戏与模拟器下载链接，快速找到适合你的游戏软件。">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="logo" href="index.html">Shadowmilk Scratch</a>
+            <nav class="site-nav" aria-label="主要导航">
+                <a href="index.html#games">全部游戏</a>
+                <a href="https://scratch.mit.edu" target="_blank" rel="noopener">Scratch 官网</a>
+                <a href="game-detail.html?id=paper-minecraft">热门推荐</a>
+                <a href="sprunki.html">Sprunki 专区</a>
+                <a href="zoo-3dcube.html">Zoo 3D Cube</a>
+                <a href="game-sites.html">游戏站榜单</a>
+                <a href="game-navigation.html" aria-current="page">软件导航</a>
+                <a href="scratch-scraper.html">游戏抓取</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page" id="software-navigation">
+        <div class="container">
+            <section class="navigation-hero" aria-labelledby="navigation-hero-title">
+                <p class="eyebrow">GLOBAL GAME SOFTWARE GUIDE</p>
+                <h1 id="navigation-hero-title">游戏软件一站式导航</h1>
+                <p>从发行平台、云游戏到创作工具与模拟器，我们精选了 20+ 款值得收藏的游戏相关软件，帮助你快速找到下载入口与核心亮点。</p>
+                <div class="navigation-highlights" aria-label="导航亮点">
+                    <span>✔ 游戏发行平台</span>
+                    <span>✔ 云游戏串流</span>
+                    <span>✔ 游戏创作工具</span>
+                    <span>✔ 模拟器与辅助</span>
+                </div>
+            </section>
+
+            <section class="tools navigation-tools" aria-label="筛选与搜索">
+                <div class="search-row">
+                    <input id="softwareSearch" class="search-input" type="search" placeholder="搜索软件名称、特色或标签..." autocomplete="off" aria-label="搜索游戏软件">
+                    <p id="softwareResultsCount" class="results-count" aria-live="polite"></p>
+                </div>
+                <div class="filter-row navigation-filters" role="tablist" aria-label="软件类型">
+                    <button type="button" class="filter-button is-active" data-filter="all" role="tab" aria-selected="true">全部</button>
+                    <button type="button" class="filter-button" data-filter="platform" role="tab" aria-selected="false">发行平台</button>
+                    <button type="button" class="filter-button" data-filter="cloud" role="tab" aria-selected="false">云游戏 / 串流</button>
+                    <button type="button" class="filter-button" data-filter="creation" role="tab" aria-selected="false">创作工具</button>
+                    <button type="button" class="filter-button" data-filter="emulator" role="tab" aria-selected="false">模拟器</button>
+                    <button type="button" class="filter-button" data-filter="utility" role="tab" aria-selected="false">工具 / 管理</button>
+                </div>
+            </section>
+
+            <section class="software-section" aria-live="polite">
+                <div id="softwareGrid" class="software-grid" role="list"></div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>Shadowmilk Scratch Arcade · 一起守护 Scratch 的创意与乐趣</p>
+            <div class="footer-links">
+                <a href="https://scratch.mit.edu/parents" target="_blank" rel="noopener">家长指引</a>
+                <a href="https://scratch.mit.edu/community_guidelines" target="_blank" rel="noopener">社区守则</a>
+                <a href="mailto:hello@shadowmilk.org">联系站长</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="game-navigation.js"></script>
+</body>
+</html>
