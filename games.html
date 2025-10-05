@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>游戏库 · youxistudio</title>
+  <meta name="description" content="youxistudio 游戏库：统一收集 CrazyGames、GameDistribution、Poki、Y8 等平台的游戏卡片，支持搜索与筛选。" />
+  <meta property="og:title" content="游戏库 · youxistudio" />
+  <meta property="og:description" content="统一收集多平台游戏卡片，支持搜索与筛选。" />
+  <meta property="og:type" content="website" />
+  <style>
+    :root{
+      --bg:#0b1220;--fg:#e5e7eb;--mut:#94a3b8;--card:#111827;--line:#1f2937;--brand:#3b82f6;
+      --ok:#22c55e;--warn:#eab308;--err:#ef4444;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#0b1220,#0f172a);color:var(--fg);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:1200px;margin:40px auto;padding:0 16px}
+    .h1{font-size:28px;font-weight:800;margin:0 0 6px}
+    .sub{color:var(--mut);margin:0 0 18px}
+    .panel{background:rgba(17,24,39,.75);border:1px solid var(--line);border-radius:16px;padding:14px}
+    .row{display:flex;gap:8px;flex-wrap:wrap}
+    input,select,button{border:1px solid var(--line);border-radius:12px;background:#0b1220;color:var(--fg);padding:10px 12px}
+    input,select{min-width:200px}
+    button{cursor:pointer}
+    .grid{display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:12px;margin-top:14px}
+    @media (min-width:640px){ .grid{grid-template-columns:repeat(2,1fr)} }
+    @media (min-width:960px){ .grid{grid-template-columns:repeat(3,1fr)} }
+    .card{background:rgba(17,24,39,.9);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+    .thumb{position:relative;background:#0b1220}
+    .thumb img{width:100%;height:180px;object-fit:cover;display:block}
+    .badge{position:absolute;left:10px;top:10px;background:rgba(0,0,0,.55);border:1px solid var(--line);padding:4px 8px;border-radius:999px;font-size:12px}
+    .body{padding:12px}
+    .title{font-weight:700;margin:0 0 6px}
+    .desc{color:var(--mut);font-size:14px;margin:0 0 10px}
+    .meta{display:flex;justify-content:space-between;align-items:center;color:var(--mut);font-size:12px}
+    .actions{display:flex;gap:8px;margin-top:10px}
+    .btn{padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#0b1220}
+    .btn.primary{background:linear-gradient(180deg,#2563eb,#1d4ed8);border-color:#1e40af}
+    .btn:hover{opacity:.92}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .chip{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:#0b1220;color:var(--mut);cursor:pointer}
+    .chip.active{background:#1e293b;color:#fff;border-color:#334155}
+    .empty,.error{color:var(--mut);text-align:center;padding:32px}
+    .footer{color:var(--mut);font-size:12px;margin-top:16px}
+    .bar{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:12px}
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"CollectionPage",
+    "name":"youxistudio 游戏库",
+    "description":"统一收集多平台游戏的卡片与跳转入口。",
+    "isPartOf":{"@type":"WebSite","name":"youxistudio","url":"https://youxistudio.com"}
+  }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <h1 class="h1">🎮 游戏库</h1>
+    <p class="sub">统一收集多平台游戏，支持搜索、平台和标签筛选。数据来源：<code>/data/games.json</code></p>
+
+    <!-- 工具栏 -->
+    <div class="panel">
+      <div class="toolbar">
+        <input id="q" placeholder="搜索标题 / 描述 / 来源 URL" style="flex:1;min-width:260px">
+        <select id="provider">
+          <option value="">全部平台</option>
+          <option value="crazygames">crazygames</option>
+          <option value="gamedistribution">gamedistribution</option>
+          <option value="poki">poki</option>
+          <option value="y8">y8</option>
+          <option value="generic">generic</option>
+        </select>
+        <select id="sort">
+          <option value="updated">按更新时间（新→旧）</option>
+          <option value="created">按创建时间（新→旧）</option>
+          <option value="title">按标题（A→Z）</option>
+        </select>
+        <select id="pageSize">
+          <option>24</option><option>36</option><option selected>48</option><option>72</option>
+        </select>
+        <button id="reset">重置</button>
+      </div>
+      <div id="tagBar" class="chips"></div>
+    </div>
+
+    <!-- 列表 -->
+    <div id="list" class="grid" aria-live="polite"></div>
+
+    <!-- 分页 / 统计 -->
+    <div class="bar">
+      <div class="footer" id="stats">加载中…</div>
+      <div>
+        <button id="more" class="btn">加载更多</button>
+      </div>
+    </div>
+
+    <div id="msg" class="empty" style="display:none"></div>
+  </div>
+
+  <script>
+  // ========= 基本配置 =========
+  const JSON_URL = '/data/games.json';    // 如放在别处，改成绝对地址
+  const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"><rect width="100%" height="100%" fill="#0b1220"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#94a3b8" font-family="system-ui" font-size="28">No Cover</text></svg>'
+  );
+
+  // ========= 状态 =========
+  let ALL = [];      // 全量
+  let VIEW = [];     // 过滤后的
+  let PAGE = 0;
+
+  // ========= DOM =========
+  const $ = (s)=>document.querySelector(s);
+  const listEl = $('#list');
+  const moreBtn = $('#more');
+  const statsEl = $('#stats');
+  const msgEl = $('#msg');
+  const qEl = $('#q');
+  const providerEl = $('#provider');
+  const sortEl = $('#sort');
+  const pageSizeEl = $('#pageSize');
+  const tagBarEl = $('#tagBar');
+
+  // ========= 工具 =========
+  const clean = (s)=> (s || '').toString().replace(/\s+/g, ' ').trim();
+  function hasTag(g, tag){
+    const t = (g.tags || []).map(x => x.toLowerCase());
+    return t.includes(tag.toLowerCase());
+  }
+
+  function uniqueTags(items){
+    const set = new Set();
+    items.forEach(g => (g.tags || []).forEach(t => set.add(clean(t))));
+    set.delete(''); return Array.from(set).slice(0,100);
+  }
+
+  function formatDesc(s){ 
+    const t = clean(s||''); 
+    return t.length > 140 ? t.slice(0,140) + '…' : t; 
+  }
+
+  function sortItems(items, key){
+    const arr = items.slice();
+    if (key === 'title') arr.sort((a,b)=> clean(a.title).localeCompare(clean(b.title)));
+    else if (key === 'created') arr.sort((a,b)=> (b.createdAt||'').localeCompare(a.createdAt||''));
+    else arr.sort((a,b)=> (b.updatedAt||'').localeCompare(a.updatedAt||'')); // default updated
+    return arr;
+  }
+
+  function applyFilter(){
+    const q = clean(qEl.value).toLowerCase();
+    const pv = providerEl.value;
+    const tagActive = tagBarEl.querySelector('.chip.active')?.dataset.tag || '';
+
+    VIEW = ALL.filter(g => {
+      if (pv && (g.provider||'') !== pv) return false;
+      if (tagActive && !hasTag(g, tagActive)) return false;
+      if (!q) return true;
+      const blob = (g.title+' '+g.description+' '+g.sourceUrl).toLowerCase();
+      return blob.includes(q);
+    });
+
+    // 排序
+    VIEW = sortItems(VIEW, sortEl.value);
+
+    // 统计 & 重置页码
+    PAGE = 0;
+    listEl.innerHTML = '';
+    renderMore(true);
+    renderStats();
+    renderTags();
+  }
+
+  function renderTags(){
+    const active = tagBarEl.querySelector('.chip.active')?.dataset.tag || '';
+    const tags = uniqueTags(ALL).sort((a,b)=>a.localeCompare(b));
+    tagBarEl.innerHTML = tags.map(t => 
+      `<button class="chip ${t===active?'active':''}" data-tag="${t}" title="筛选标签：${t}">${t}</button>`
+    ).join('');
+    tagBarEl.querySelectorAll('.chip').forEach(btn=>{
+      btn.onclick = ()=>{ 
+        const isActive = btn.classList.contains('active');
+        tagBarEl.querySelectorAll('.chip').forEach(b=>b.classList.remove('active'));
+        if (!isActive) btn.classList.add('active');
+        applyFilter();
+      };
+    });
+  }
+
+  function renderStats(){
+    const total = ALL.length, showing = VIEW.length;
+    statsEl.textContent = `共 ${total} 条，符合筛选 ${showing} 条。`;
+    msgEl.style.display = showing ? 'none' : '';
+    msgEl.textContent = showing ? '' : '没有符合筛选条件的结果。';
+  }
+
+  function cardHTML(g){
+    const cover = g.cover || PLACEHOLDER;
+    const provider = g.provider || 'generic';
+    const featured = g.flags?.featured ? `<span class="badge">★ 精选</span>` : '';
+    return `
+    <article class="card">
+      <div class="thumb">
+        <a href="${g.sourceUrl}" target="_blank" rel="noopener">
+          <img loading="lazy" src="${cover}" alt="${(g.title||'Game').replace(/"/g,'&quot;')}">
+          ${featured}
+        </a>
+      </div>
+      <div class="body">
+        <h3 class="title">${g.title || 'Untitled'}</h3>
+        <p class="desc">${formatDesc(g.description)}</p>
+        <div class="meta">
+          <span>来源：${provider}</span>
+          <span>${(g.updatedAt||'').slice(0,10)}</span>
+        </div>
+        <div class="actions">
+          <a class="btn primary" href="${g.sourceUrl}" target="_blank" rel="noopener">去原站玩 →</a>
+        </div>
+      </div>
+    </article>`;
+  }
+
+  function renderMore(reset=false){
+    const size = parseInt(pageSizeEl.value || '48', 10);
+    const start = PAGE * size, end = start + size;
+    const chunk = VIEW.slice(start, end);
+    listEl.insertAdjacentHTML('beforeend', chunk.map(cardHTML).join(''));
+    PAGE++;
+    moreBtn.style.display = (PAGE * size < VIEW.length) ? '' : 'none';
+  }
+
+  async function load(){
+    statsEl.textContent = '加载中…';
+    try{
+      const res = await fetch(JSON_URL, { cache: 'no-store' });
+      const data = await res.json();
+      const games = Array.isArray(data.games) ? data.games : [];
+      // 轻清洗
+      ALL = games.map(g => ({
+        ...g,
+        title: clean(g.title || ''),
+        description: clean(g.description || ''),
+        provider: g.provider || 'generic',
+        tags: Array.isArray(g.tags) ? g.tags : [],
+      }));
+      applyFilter();
+    }catch(e){
+      msgEl.style.display = '';
+      msgEl.className = 'error';
+      msgEl.textContent = '加载 /data/games.json 失败：' + e.message;
+      statsEl.textContent = '';
+      moreBtn.style.display = 'none';
+    }
+  }
+
+  // ========= 事件 =========
+  qEl.oninput = ()=> applyFilter();
+  providerEl.onchange = ()=> applyFilter();
+  sortEl.onchange = ()=> applyFilter();
+  pageSizeEl.onchange = ()=> applyFilter();
+  $('#reset').onclick = ()=>{
+    qEl.value = ''; providerEl.value=''; sortEl.value='updated';
+    tagBarEl.querySelectorAll('.chip').forEach(b=>b.classList.remove('active'));
+    applyFilter();
+  };
+  moreBtn.onclick = ()=> renderMore();
+
+  // ========= 启动 =========
+  load();
+  </script>
+</body>
+</html>
