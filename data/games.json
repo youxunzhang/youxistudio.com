@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "updatedAt": "2025-10-05T07:44:41.173Z",
+  "games": [
+    {
+      "id": "gd-c8340d91",
+      "provider": "gamedistribution",
+      "sourceUrl": "https://blog.gamedistribution.com/the-squid-game-effect-in-casual-gaming/",
+      "title": "The Squid Game Effect in Casual Gaming - The official GameDistribution Blog",
+      "description": "From Streaming Hit to Gaming Phenomenon Squid Game first captured global attention in 2021 as a South Korean Netflix series built around high-stakes survival challenges...",
+      "cover": "/img/covers/gd-c8340d91.jpg",
+      "createdAt": "2025-10-05T07:43:31.269Z",
+      "updatedAt": "2025-10-05T07:44:40.805Z"
+    }
+  ]
+}
