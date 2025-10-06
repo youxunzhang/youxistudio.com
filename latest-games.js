@@ -58,14 +58,54 @@
         return;
     }
 
-    function ensureProxy(url) {
-        if (!url) return '';
-        if (url.startsWith('https://r.jina.ai/')) {
-            return url;
+    const proxyHosts = [
+        'r.jina.ai',
+        'cors.isomorphic-git.org',
+        'api.allorigins.win',
+        'thingproxy.freeboard.io'
+    ];
+
+    function isLikelyProxied(url) {
+        try {
+            const hostname = new URL(url).hostname;
+            return proxyHosts.some((host) => hostname === host || hostname.endsWith(`.${host}`));
+        } catch (error) {
+            return false;
         }
-        const sanitized = url.replace(/^https?:\/\//, '');
-        const isHttps = /^https:/.test(url);
-        return `https://r.jina.ai/${isHttps ? 'https://' : 'http://'}${sanitized}`;
+    }
+
+    function buildProxyAttempts(url) {
+        const normalizedUrl = url?.trim() ?? '';
+        const attempts = [];
+        const seen = new Set();
+
+        const add = (value) => {
+            const candidate = value?.trim();
+            if (!candidate || seen.has(candidate)) {
+                return;
+            }
+            seen.add(candidate);
+            attempts.push(candidate);
+        };
+
+        add(normalizedUrl);
+
+        if (isLikelyProxied(normalizedUrl)) {
+            return attempts;
+        }
+
+        const sanitized = normalizedUrl.replace(/^https?:\/\//, '');
+        const isHttps = /^https:/i.test(normalizedUrl);
+
+        add(`https://r.jina.ai/${isHttps ? 'https://' : 'http://'}${sanitized}`);
+        if (isHttps) {
+            add(`https://r.jina.ai/http://${sanitized}`);
+        }
+        add(`https://cors.isomorphic-git.org/${normalizedUrl}`);
+        add(`https://api.allorigins.win/raw?url=${encodeURIComponent(normalizedUrl)}`);
+        add(`https://thingproxy.freeboard.io/fetch/${normalizedUrl}`);
+
+        return attempts;
     }
 
     function humanizeSlug(url) {
@@ -145,27 +185,51 @@
 
     async function fetchSource(source) {
         const targetUrl = state.get(source.id)?.url || source.url;
-        if (!targetUrl) {
+        if (!targetUrl || !targetUrl.trim()) {
             throw new Error('未设置有效的站点地图地址');
         }
-        const response = await fetch(ensureProxy(targetUrl), {
-            headers: {
-                'Accept': 'application/xml,text/xml,text/plain,*/*'
+        const attempts = buildProxyAttempts(targetUrl);
+        let lastError = null;
+
+        for (const attemptUrl of attempts) {
+            try {
+                const response = await fetch(attemptUrl, {
+                    headers: {
+                        'Accept': 'application/xml, text/xml, text/plain, */*'
+                    }
+                });
+
+                if (!response.ok) {
+                    lastError = new Error(`HTTP ${response.status}`);
+                    continue;
+                }
+
+                const text = await response.text();
+                if (!text.trim()) {
+                    lastError = new Error('站点地图返回为空');
+                    continue;
+                }
+
+                const entries = parseSitemap(text, source);
+                if (!entries.length) {
+                    lastError = new Error('未在站点地图中找到可用条目');
+                    continue;
+                }
+
+                const limit = state.get(source.id)?.limit ?? source.limit ?? 10;
+                return entries.slice(0, Math.max(1, Number(limit) || 10));
+            } catch (error) {
+                const message = error instanceof Error ? error.message : '抓取失败';
+                lastError = new Error(message);
             }
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
         }
-        const text = await response.text();
-        if (!text.trim()) {
-            throw new Error('站点地图返回为空');
+
+        if (lastError) {
+            const attemptSuffix = attempts.length > 1 ? `（已尝试 ${attempts.length} 种访问方式）` : '';
+            throw new Error(`${lastError.message}${attemptSuffix}`);
         }
-        const entries = parseSitemap(text, source);
-        if (!entries.length) {
-            throw new Error('未在站点地图中找到可用条目');
-        }
-        const limit = state.get(source.id)?.limit ?? source.limit ?? 10;
-        return entries.slice(0, Math.max(1, Number(limit) || 10));
+
+        throw new Error('抓取失败');
     }
 
     function createSourceCard(source) {
