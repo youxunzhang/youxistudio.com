@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>专题游戏目录 · youxistudio</title>
+  <meta name="description" content="快速浏览与跳转到 50 个专题游戏落地页，包括 Connections Game、Palworld、Infinite Craft 等。" />
+  <link rel="stylesheet" href="/game-landing.css" />
+  <style>
+    body{background:#030712;color:#e2e8f0;font-family:"Inter","PingFang SC",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    .wrap{max-width:1100px;margin:0 auto;padding:40px 16px 80px}
+    .hero{display:flex;flex-direction:column;gap:16px;margin-bottom:32px}
+    .hero h1{font-size:36px;margin:0;font-weight:800;letter-spacing:-.01em}
+    .hero p{margin:0;color:#94a3b8;line-height:1.7}
+    .panel{background:rgba(15,23,42,.85);border:1px solid rgba(148,163,184,.12);border-radius:20px;padding:18px 20px;margin-bottom:28px}
+    .panel label{display:block;font-size:14px;color:#cbd5f5;margin-bottom:6px}
+    .panel input{width:100%;border-radius:12px;border:1px solid rgba(148,163,184,.25);background:#0f172a;color:#e2e8f0;padding:10px 12px;font-size:16px}
+    .grid{display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:16px}
+    @media (min-width:720px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (min-width:1080px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    .card{display:flex;flex-direction:column;gap:12px;background:rgba(15,23,42,.72);border:1px solid rgba(148,163,184,.14);border-radius:18px;padding:18px;transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease}
+    .card:hover{transform:translateY(-4px);border-color:#38bdf8;box-shadow:0 12px 30px rgba(56,189,248,.15)}
+    .card h2{margin:0;font-size:20px;font-weight:700;color:#f1f5f9}
+    .card p{margin:0;color:#94a3b8;font-size:14px;line-height:1.6}
+    .card a{align-self:flex-start;padding:8px 12px;background:linear-gradient(135deg,#38bdf8,#2563eb);border-radius:12px;color:#fff;font-weight:600;font-size:14px;text-decoration:none}
+    .counter{font-size:14px;color:#94a3b8;margin-bottom:12px}
+    .empty{display:none;text-align:center;color:#64748b;padding:24px;border:1px dashed rgba(148,163,184,.3);border-radius:16px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <p class="back-link"><a href="/" style="color:#38bdf8;text-decoration:none">← 返回首页</a></p>
+      <h1>专题游戏落地页目录</h1>
+      <p>这里整理了最近批量生成的 50 个游戏主题落地页，方便内部同事快速预览与校对。支持搜索关键词或说明，点击即可打开对应的 <code>/game/&lt;slug&gt;/</code> 页面。</p>
+    </header>
+
+    <section class="panel" aria-label="搜索">
+      <label for="search">搜索关键词或说明</label>
+      <input id="search" type="search" placeholder="例如：merge、3D、puzzle…" autocomplete="off" />
+    </section>
+
+    <div class="counter" id="counter" aria-live="polite">共 50 个页面</div>
+
+    <section class="grid" id="list" aria-live="polite"></section>
+    <div class="empty" id="empty">未找到匹配的专题，请尝试其他关键词。</div>
+  </div>
+
+  <script>
+    const PAGES = [
+      { title: 'Connections Game', slug: 'connections', desc: '2024 年度热搜游戏之一' },
+      { title: 'Palworld', slug: 'palworld', desc: '生存 + 合成类题材' },
+      { title: 'Infinite Craft', slug: 'infinite-craft', desc: '合成类网页游戏趋势' },
+      { title: 'Sprunki', slug: 'sprunki', desc: '在热门榜单出现过' },
+      { title: 'Helldivers 2', slug: 'helldivers-2', desc: 'AAA 热词' },
+      { title: 'Browser Puzzle Game', slug: 'browser-puzzle', desc: '泛类词，适合作为分类页' },
+      { title: 'Idle Merge Game', slug: 'idle-merge', desc: 'Idle + 合并类型' },
+      { title: 'Monster Merge', slug: 'monster-merge', desc: '合成 + 怪兽主题' },
+      { title: 'Stickman Hook', slug: 'stickman-hook', desc: '高可玩性经典小游戏' },
+      { title: 'Helix Jump 3D', slug: 'helix-jump-3d', desc: '长期热门轻游戏' },
+      { title: 'Crowd Run 3D', slug: 'crowd-run-3d', desc: '“run + 3D” 组合' },
+      { title: 'Geometry Dash Lite', slug: 'geometry-dash-lite', desc: '节奏类经典' },
+      { title: 'Paper.io 3D', slug: 'paperio-3d', desc: 'io 类稳定流量词' },
+      { title: 'Slope Ball', slug: 'slope-ball', desc: '球体 + 跳跃题材' },
+      { title: 'Car Rush Online', slug: 'car-rush-online', desc: '赛车类词' },
+      { title: 'Tunnel Rush', slug: 'tunnel-rush', desc: '爆款小游戏之一' },
+      { title: 'Stack Colors', slug: 'stack-colors', desc: '色彩堆叠类' },
+      { title: 'Merge Beasts Online', slug: 'merge-beasts-online', desc: '衍生扩展词' },
+      { title: 'Ball Attack Game', slug: 'ball-attack', desc: '经典弹球类' },
+      { title: 'Dog Escape Game', slug: 'dog-escape', desc: '可爱逃脱类' },
+      { title: 'Bunny Jump 3D', slug: 'bunny-jump-3d', desc: '轻松上手小游戏' },
+      { title: 'Monster Dash Online', slug: 'monster-dash-online', desc: '动作 + 跑酷' },
+      { title: 'Zombie Merge', slug: 'zombie-merge', desc: '合成 + 僵尸题材' },
+      { title: 'Block Puzzle Classic', slug: 'block-puzzle-classic', desc: '传统拼图类' },
+      { title: 'Color Switch Reloaded', slug: 'color-switch-reloaded', desc: '经典重制版' },
+      { title: 'Fruit Merge 3D', slug: 'fruit-merge-3d', desc: '水果 + 合并 + 3D' },
+      { title: 'Push Puzzle', slug: 'push-puzzle', desc: '推箱子类型' },
+      { title: 'Fireboy Watergirl', slug: 'fireboy-watergirl', desc: '双人合作类经典' },
+      { title: 'Subway Run 3D', slug: 'subway-run-3d', desc: '跑酷 + 地铁' },
+      { title: 'Parkour Rush', slug: 'parkour-rush', desc: '跑酷 + 冲刺' },
+      { title: 'Swing Monkey', slug: 'swing-monkey', desc: '动作 + 可爱风' },
+      { title: 'Flip Diving 3D', slug: 'flip-diving-3d', desc: '特技 + 跳跃' },
+      { title: 'Neon Runner', slug: 'neon-runner', desc: '霓虹跑酷' },
+      { title: 'Rocket Jump', slug: 'rocket-jump', desc: '火箭 + 跳跃' },
+      { title: 'Tunnel Run', slug: 'tunnel-run', desc: '简单跑酷' },
+      { title: 'Jump Hero', slug: 'jump-hero', desc: '英雄跳跃类' },
+      { title: 'Catch Colors', slug: 'catch-colors', desc: '色彩捕捉类' },
+      { title: 'Galaxy Shooter', slug: 'galaxy-shooter', desc: '太空射击题材' },
+      { title: 'Star Merge', slug: 'star-merge', desc: '星体 + 合并' },
+      { title: 'Word Connect Puzzle', slug: 'word-connect-puzzle', desc: '拼字游戏类' },
+      { title: 'Brain Teaser 3D', slug: 'brain-teaser-3d', desc: '益智 + 3D' },
+      { title: 'Tower Defense Arena', slug: 'tower-defense-arena', desc: '塔防类' },
+      { title: 'Merge Gardens', slug: 'merge-gardens', desc: '园艺 + 合并' },
+      { title: 'Merge Kingdoms', slug: 'merge-kingdoms', desc: '策略 + 合并' },
+      { title: 'Water Sort 3D', slug: 'water-sort-3d', desc: '水排序类' },
+      { title: 'Labyrinth Maze', slug: 'labyrinth-maze', desc: '迷宫类' },
+      { title: 'Shadow Runner', slug: 'shadow-runner', desc: '影子跑酷' },
+      { title: 'Neon Grid Runner', slug: 'neon-grid-runner', desc: '霓虹格子跑酷' },
+      { title: 'Mini Golf Challenge', slug: 'mini-golf-challenge', desc: '迷你高尔夫' },
+      { title: 'Memory Match Classic', slug: 'memory-match-classic', desc: '对对碰类' }
+    ];
+
+    const listEl = document.getElementById('list');
+    const searchEl = document.getElementById('search');
+    const counterEl = document.getElementById('counter');
+    const emptyEl = document.getElementById('empty');
+
+    function render(items){
+      listEl.innerHTML = items.map(item => `
+        <article class="card">
+          <h2>${item.title}</h2>
+          <p>${item.desc}</p>
+          <a href="/games/${item.slug}/" aria-label="打开 ${item.title} 专题">查看页面</a>
+        </article>
+      `).join('');
+      counterEl.textContent = `共 ${items.length} 个页面`;
+      emptyEl.style.display = items.length ? 'none' : 'block';
+    }
+
+    function handleSearch(){
+      const q = searchEl.value.trim().toLowerCase();
+      const filtered = PAGES.filter(item => {
+        const text = `${item.title} ${item.desc} ${item.slug}`.toLowerCase();
+        return text.includes(q);
+      });
+      render(filtered);
+    }
+
+    searchEl.addEventListener('input', handleSearch);
+    render(PAGES);
+  </script>
+</body>
+</html>
