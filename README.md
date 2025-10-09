@@ -69,6 +69,11 @@ http-server
 #### 使用Live Server (VS Code扩展)
 在VS Code中安装Live Server扩展，右键点击 `index.html` 选择 "Open with Live Server"。
 
+### 4. 专题游戏落地页入口
+- 启动本地服务器后访问 [`http://localhost:8000/games/`](http://localhost:8000/games/)（或你配置的端口），即可看到“专题游戏落地页目录”。
+- 页面提供最近生成的 50 个 `/games/<slug>/` 专题页链接与搜索框，可直接点击跳转预览。
+- 如果只想打开单个页面，也可以在浏览器地址栏输入 `http://localhost:8000/games/<slug>/`，例如 `http://localhost:8000/games/connections/`。
+
 ## 🎯 使用说明
 
 ### 浏览游戏
