@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏数据管理 · Shadowmilk Scratch</title>
+    <meta name="description" content="管理与编辑 Shadowmilk Scratch 游戏清单，直接查看、修改并导出 JSON 数据。">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="game-manager.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="logo" href="index.html">Shadowmilk Scratch</a>
+            <nav class="site-nav" aria-label="主要导航">
+                <a href="index.html#games">全部游戏</a>
+                <a href="https://scratch.mit.edu" target="_blank" rel="noopener">Scratch 官网</a>
+                <a href="latest-games.html">最新游戏</a>
+                <a href="games/index.html">热门专题</a>
+                <a href="game-detail.html?id=paper-minecraft">热门推荐</a>
+                <a href="sprunki.html">Sprunki 专区</a>
+                <a href="zoo-3dcube.html">Zoo 3D Cube</a>
+                <a href="game-sites.html">游戏站榜单</a>
+                <a href="index.html#iframe-games">IFRAME 游戏</a>
+                <a href="game-navigation.html">软件导航</a>
+                <a href="scratch-scraper.html">游戏抓取</a>
+                <a href="game-manager.html" aria-current="page">JSON 管理</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page" id="game-manager">
+        <div class="container">
+            <div class="page-header">
+                <p class="eyebrow">JSON MANAGEMENT TOOL</p>
+                <h1>管理站内游戏数据</h1>
+                <p>在这里可以直接查看 <code>data/game-library.json</code> 的内容，支持快速编辑、增删条目，并导出更新后的 JSON 文件用于站点部署。</p>
+            </div>
+
+            <div class="editor-layout">
+                <section class="editor-card" aria-labelledby="gameTableHeading">
+                    <h2 id="gameTableHeading">游戏清单</h2>
+                    <div class="summary">
+                        <span id="gameCount">当前游戏：0</span>
+                        <span id="unsavedIndicator" hidden>提示：存在未导出的更改</span>
+                    </div>
+                    <div class="table-wrapper" role="region" aria-live="polite">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">游戏名称</th>
+                                    <th scope="col">封面图片地址</th>
+                                    <th scope="col">试玩链接</th>
+                                    <th scope="col" style="width: 160px;">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gamesTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <form class="add-form" id="addGameForm" aria-labelledby="addGameHeading">
+                        <div>
+                            <h3 id="addGameHeading">添加新游戏</h3>
+                            <p class="helper-text">填写完整信息后点击“添加游戏”即可插入到列表末尾。</p>
+                        </div>
+                        <div class="add-form-row">
+                            <label>
+                                <span>游戏名称</span>
+                                <input type="text" id="newGameName" name="name" required placeholder="例如：Paper Minecraft">
+                            </label>
+                            <label>
+                                <span>封面图片地址</span>
+                                <input type="url" id="newGameImage" name="image" required placeholder="https://...">
+                            </label>
+                            <label>
+                                <span>试玩链接</span>
+                                <input type="url" id="newGameUrl" name="url" required placeholder="https://...">
+                            </label>
+                        </div>
+                        <div class="actions">
+                            <button type="submit" class="primary">添加游戏</button>
+                            <button type="reset" class="secondary">清空表单</button>
+                        </div>
+                    </form>
+                    <div id="statusMessage" class="status" role="status" aria-live="polite"></div>
+                </section>
+
+                <aside class="editor-card" aria-labelledby="jsonToolsHeading">
+                    <h2 id="jsonToolsHeading">JSON 工具箱</h2>
+                    <p class="helper-text">需要将更改同步到服务器时，下载更新后的文件并替换 <code>data/game-library.json</code>。</p>
+                    <div class="tool-grid" role="group" aria-label="JSON 工具">
+                        <button type="button" class="primary" id="downloadJson">下载 JSON</button>
+                        <button type="button" class="secondary" id="resetChanges">还原文件</button>
+                        <button type="button" class="secondary" id="uploadTrigger">导入 JSON</button>
+                        <input type="file" id="uploadJson" accept="application/json" hidden>
+                    </div>
+                    <h3>实时预览</h3>
+                    <pre class="json-preview" id="jsonPreview" aria-live="polite" tabindex="0">正在加载...</pre>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>Shadowmilk Scratch Arcade · 一起守护 Scratch 的创意与乐趣</p>
+            <div class="footer-links">
+                <a href="https://scratch.mit.edu/parents" target="_blank" rel="noopener">家长指引</a>
+                <a href="https://scratch.mit.edu/community_guidelines" target="_blank" rel="noopener">社区守则</a>
+                <a href="mailto:hello@shadowmilk.org">联系站长</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="game-manager.js" type="module"></script>
+</body>
+</html>
