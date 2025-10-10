@@ -69,6 +69,27 @@ http-server
 #### 使用Live Server (VS Code扩展)
 在VS Code中安装Live Server扩展，右键点击 `index.html` 选择 "Open with Live Server"。
 
+### 4. 专题游戏落地页入口
+- 启动本地服务器后访问 [`http://localhost:8000/games/`](http://localhost:8000/games/)（或你配置的端口），即可看到“专题游戏落地页目录”。
+- 页面提供最近生成的 50 个 `/games/<slug>/` 专题页链接与搜索框，可直接点击跳转预览。
+- 如果只想打开单个页面，也可以在浏览器地址栏输入 `http://localhost:8000/games/<slug>/`，例如 `http://localhost:8000/games/connections/`。
+
+### 5. 查看昨天改动过的文件
+如果想快速确认昨天提交了哪些改动，可以在项目根目录执行以下命令：
+
+```bash
+# 显示昨天（含）以来的提交摘要
+git log --since="yesterday" --oneline
+
+# 查看昨天至今每个提交涉及的文件与增删行数
+git log --since="yesterday" --stat
+
+# 只想看昨天的实际差异，可结合 --until 限定时间范围
+git log --since="yesterday" --until="today" -p
+```
+
+> 💡 如果你需要查看某个具体提交的文件内容，可以把 `git log` 输出的提交哈希复制出来，然后使用 `git show <commit>` 或 `git diff <old>..<new>` 查看详细差异。
+
 ## 🎯 使用说明
 
 ### 浏览游戏
@@ -179,3 +200,9 @@ http-server
 ---
 
 **享受游戏时光！** 🎮✨ 
+### 6. hotspotgame 页面数据来源
+若想了解 `https://youxistudio.com/hotspotgame` 页面展示的数据来自何处，可参考《[hotspotgame 数据来源与维护指引](docs/hotspotgame-data.md)》。文档说明了：
+
+- 页面走 `/api/games/<game_name>` 接口，从 Postgres 的 `gm_games` 表读取最新记录；
+- 真实数据只存放在数据库中，仓库里没有可直接修改的 JSON 文件；
+- 若需更新内容，需要使用 Prisma Studio 或数据库脚本来写入新数据。
