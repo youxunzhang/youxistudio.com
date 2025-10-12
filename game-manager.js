@@ -16,6 +16,20 @@ let hasChanges = false;
 let statusTimeoutId;
 
 const jsonPath = 'data/game-library.json';
+const DEFAULT_GAME_TYPE = 'IFRAME游戏';
+
+const newGameTypeInput = addForm?.querySelector('#newGameType');
+if (newGameTypeInput && !newGameTypeInput.value) {
+    newGameTypeInput.value = DEFAULT_GAME_TYPE;
+}
+
+addForm?.addEventListener('reset', () => {
+    if (newGameTypeInput) {
+        window.setTimeout(() => {
+            newGameTypeInput.value = DEFAULT_GAME_TYPE;
+        }, 0);
+    }
+});
 
 init();
 
@@ -47,9 +61,10 @@ function normalizePayload(payload) {
 }
 
 function sanitizeGame(game) {
+    const type = String(game?.type ?? game?.category ?? '').trim();
     return {
         name: String(game?.name ?? '').trim(),
-        type: String(game?.type ?? game?.category ?? '').trim(),
+        type: type || DEFAULT_GAME_TYPE,
         image: String(game?.image ?? '').trim(),
         url: String(game?.url ?? '').trim(),
         iframe: String(game?.iframe ?? game?.iframeUrl ?? '').trim()
