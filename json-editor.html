@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JSON 游戏库可视化编辑器</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .modal-bg {background: rgba(0,0,0,.45);}
+    .drag-handle {cursor: move;}
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+  <header class="sticky top-0 z-10 bg-white/80 backdrop-blur border-b">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
+      <h1 class="text-2xl font-semibold">JSON 游戏库可视化编辑器</h1>
+      <span class="text-xs text-slate-500">(支持增删改查 · 动态字段 · 导入/导出)</span>
+    </div>
+  </header>
+
+  <section class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center gap-2">
+    <label class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border bg-white hover:bg-slate-50 cursor-pointer">
+      <input id="fileInput" type="file" accept="application/json" class="hidden" />
+      <span class="text-sm">📂 导入 JSON</span>
+    </label>
+    <button id="btnExport" class="px-3 py-2 rounded-xl border bg-white hover:bg-slate-50 text-sm">💾 导出 JSON</button>
+    <button id="btnAdd" class="px-3 py-2 rounded-xl border bg-white hover:bg-slate-50 text-sm">➕ 新建游戏</button>
+    <button id="btnManageFields" class="px-3 py-2 rounded-xl border bg-white hover:bg-slate-50 text-sm">🧩 字段管理</button>
+    <button id="btnReset" class="px-3 py-2 rounded-xl border bg-white hover:bg-slate-50 text-sm">🗑 清空当前（仅本地）</button>
+
+    <div class="ml-auto flex items-center gap-2">
+      <input id="searchInput" type="search" placeholder="搜索：名称/类型/任意字段" class="w-64 px-3 py-2 text-sm rounded-xl border bg-white" />
+      <select id="pageSize" class="px-2 py-2 text-sm rounded-xl border bg-white">
+        <option value="10">10/页</option>
+        <option value="20">20/页</option>
+        <option value="50">50/页</option>
+        <option value="100">100/页</option>
+      </select>
+    </div>
+  </section>
+
+  <main class="max-w-7xl mx-auto px-4 pb-24">
+    <div id="tableWrap" class="overflow-x-auto bg-white border rounded-2xl shadow-sm"></div>
+    <div id="pager" class="mt-3 flex items-center justify-between text-sm text-slate-600"></div>
+  </main>
+
+  <script>
+    const STORAGE_KEY = 'jsonGameLibraryState';
+    const createId = () => (window.crypto && typeof window.crypto.randomUUID === 'function')
+      ? window.crypto.randomUUID()
+      : 'id-' + Math.random().toString(36).slice(2, 10);
+    const defaultFields = [
+      { key: 'title', label: '游戏名称', required: true },
+      { key: 'genre', label: '类型', required: false },
+      { key: 'platform', label: '平台', required: false },
+      { key: 'developer', label: '开发商', required: false },
+      { key: 'releaseDate', label: '发布日期', required: false },
+      { key: 'description', label: '简介', required: false }
+    ];
+
+    const sampleGames = [
+      {
+        _id: createId(),
+        title: '星际探索者',
+        genre: '动作冒险',
+        platform: 'PC / PS5',
+        developer: 'Nebula Studio',
+        releaseDate: '2024-07-01',
+        description: '扮演探索者穿梭宇宙，揭开失落文明的秘密。'
+      },
+      {
+        _id: createId(),
+        title: '幻想王国：觉醒',
+        genre: '角色扮演',
+        platform: 'Switch / PC',
+        developer: 'Crystal Forge',
+        releaseDate: '2023-11-18',
+        description: '自由探索开放世界，集结英雄抵御黑暗。'
+      },
+      {
+        _id: createId(),
+        title: '极速方程式',
+        genre: '竞速',
+        platform: 'PC / Xbox',
+        developer: 'Velocity Lab',
+        releaseDate: '2022-05-10',
+        description: '高拟真赛车模拟，与全球玩家在线对决。'
+      }
+    ];
+
+    let state = loadState();
+    let fields = state.fields;
+    let games = state.items;
+    let currentPage = 1;
+    let sortState = { key: null, direction: 'asc' };
+
+    const tableWrap = document.getElementById('tableWrap');
+    const pagerEl = document.getElementById('pager');
+    const searchInput = document.getElementById('searchInput');
+    const pageSizeSelect = document.getElementById('pageSize');
+    const fileInput = document.getElementById('fileInput');
+
+    render();
+
+    document.getElementById('btnAdd').addEventListener('click', () => openGameModal());
+    document.getElementById('btnManageFields').addEventListener('click', openFieldManager);
+    document.getElementById('btnExport').addEventListener('click', exportJSON);
+    document.getElementById('btnReset').addEventListener('click', resetState);
+    searchInput.addEventListener('input', () => { currentPage = 1; render(); });
+    pageSizeSelect.addEventListener('change', () => { currentPage = 1; render(); });
+    fileInput.addEventListener('change', handleImport);
+
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          return {
+            fields: normaliseFields(parsed.fields || defaultFields),
+            items: ensureIds(parsed.items || [])
+          };
+        } catch (err) {
+          console.warn('解析本地数据失败，使用默认数据', err);
+        }
+      }
+      return { fields: [...defaultFields], items: [...sampleGames] };
+    }
+
+    function ensureIds(list) {
+      return list.map(item => ({
+        ...item,
+        _id: item._id || createId()
+      }));
+    }
+
+    function normaliseFields(list) {
+      const valid = Array.isArray(list) && list.length
+        ? list.map(f => ({
+            key: String(f.key || '').trim(),
+            label: String(f.label || f.key || '').trim() || '未命名字段',
+            required: Boolean(f.required)
+          })).filter(f => f.key)
+        : [...defaultFields];
+      const unique = [];
+      const seen = new Set();
+      valid.forEach(f => {
+        if (!seen.has(f.key)) {
+          unique.push(f);
+          seen.add(f.key);
+        }
+      });
+      return unique.length ? unique : [...defaultFields];
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ fields, items: games }));
+    }
+
+    function render() {
+      renderTable();
+      renderPager();
+      saveState();
+    }
+
+    function getFilteredGames() {
+      const keyword = searchInput.value.trim().toLowerCase();
+      let filtered = games;
+      if (keyword) {
+        filtered = games.filter(game => fields.some(field => {
+          const value = game[field.key];
+          return value && String(value).toLowerCase().includes(keyword);
+        }));
+      }
+      if (sortState.key) {
+        const { key, direction } = sortState;
+        filtered = [...filtered].sort((a, b) => {
+          const va = a[key] ?? '';
+          const vb = b[key] ?? '';
+          return direction === 'asc'
+            ? String(va).localeCompare(String(vb), 'zh')
+            : String(vb).localeCompare(String(va), 'zh');
+        });
+      }
+      return filtered;
+    }
+
+    function renderTable() {
+      const filtered = getFilteredGames();
+      const pageSize = Number(pageSizeSelect.value) || 10;
+      const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+      if (currentPage > totalPages) currentPage = totalPages;
+      const start = (currentPage - 1) * pageSize;
+      const pageItems = filtered.slice(start, start + pageSize);
+
+      const table = document.createElement('table');
+      table.className = 'w-full text-left text-sm';
+
+      const thead = document.createElement('thead');
+      thead.innerHTML = `<tr class="border-b bg-slate-50/60">${fields.map(field => {
+        const isSorted = sortState.key === field.key;
+        const indicator = isSorted ? (sortState.direction === 'asc' ? '↑' : '↓') : '';
+        return `<th data-key="${field.key}" class="px-4 py-3 font-medium text-slate-600 hover:text-slate-900 cursor-pointer select-none">${field.label} ${indicator}</th>`;
+      }).join('')}<th class="px-4 py-3 font-medium text-slate-600">操作</th></tr>`;
+      thead.addEventListener('click', handleSortClick);
+      table.appendChild(thead);
+
+      const tbody = document.createElement('tbody');
+      if (!pageItems.length) {
+        tbody.innerHTML = `<tr><td colspan="${fields.length + 1}" class="px-4 py-10 text-center text-slate-500">暂无数据，可导入或新建游戏。</td></tr>`;
+      } else {
+        tbody.innerHTML = pageItems.map(game => {
+          const cells = fields.map(field => `<td class="px-4 py-3 align-top">${formatValue(game[field.key])}</td>`).join('');
+          return `<tr class="border-b last:border-none hover:bg-slate-50/80">
+            ${cells}
+            <td class="px-4 py-3 whitespace-nowrap flex items-center gap-2">
+              <button class="text-blue-600 hover:text-blue-800" data-action="edit" data-id="${game._id}">编辑</button>
+              <button class="text-amber-600 hover:text-amber-800" data-action="copy" data-id="${game._id}">复制</button>
+              <button class="text-rose-600 hover:text-rose-800" data-action="delete" data-id="${game._id}">删除</button>
+            </td>
+          </tr>`;
+        }).join('');
+      }
+      tbody.addEventListener('click', handleRowAction);
+      table.appendChild(tbody);
+
+      tableWrap.innerHTML = '';
+      tableWrap.appendChild(table);
+    }
+
+    function formatValue(value) {
+      if (value === undefined || value === null || value === '') return '<span class="text-slate-400">—</span>';
+      const str = String(value);
+      if (/^https?:\/\//i.test(str)) {
+        return `<a href="${str}" target="_blank" class="text-blue-600 hover:underline">${str}</a>`;
+      }
+      return str.replace(/\n/g, '<br />');
+    }
+
+    function handleSortClick(event) {
+      const key = event.target.closest('th')?.dataset.key;
+      if (!key) return;
+      if (sortState.key === key) {
+        sortState.direction = sortState.direction === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortState = { key, direction: 'asc' };
+      }
+      render();
+    }
+
+    function handleRowAction(event) {
+      const btn = event.target.closest('button[data-action]');
+      if (!btn) return;
+      const id = btn.dataset.id;
+      const action = btn.dataset.action;
+      const index = games.findIndex(game => game._id === id);
+      if (index === -1) return;
+      const game = games[index];
+      if (action === 'edit') {
+        openGameModal(game, index);
+      } else if (action === 'copy') {
+        copyGame(game);
+      } else if (action === 'delete') {
+        deleteGame(index);
+      }
+    }
+
+    function renderPager() {
+      const filtered = getFilteredGames();
+      const total = filtered.length;
+      const pageSize = Number(pageSizeSelect.value) || 10;
+      const totalPages = Math.max(1, Math.ceil(total / pageSize));
+      const rangeStart = total ? (currentPage - 1) * pageSize + 1 : 0;
+      const rangeEnd = Math.min(currentPage * pageSize, total);
+
+      pagerEl.innerHTML = `
+        <div>共 <span class="font-medium">${total}</span> 条，显示 ${rangeStart}-${rangeEnd}</div>
+        <div class="flex items-center gap-2">
+          <button class="px-3 py-1 rounded-lg border bg-white disabled:opacity-40" ${currentPage === 1 ? 'disabled' : ''} data-page="prev">上一页</button>
+          <span>第 ${currentPage} / ${totalPages} 页</span>
+          <button class="px-3 py-1 rounded-lg border bg-white disabled:opacity-40" ${currentPage === totalPages ? 'disabled' : ''} data-page="next">下一页</button>
+        </div>`;
+      pagerEl.querySelectorAll('button[data-page]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const dir = btn.dataset.page;
+          if (dir === 'prev' && currentPage > 1) currentPage--;
+          if (dir === 'next' && currentPage < totalPages) currentPage++;
+          render();
+        });
+      });
+    }
+
+    function openGameModal(game = null, index = null) {
+      const isEdit = Boolean(game);
+      const overlay = document.createElement('div');
+      overlay.className = 'fixed inset-0 z-50 modal-bg flex items-center justify-center p-4';
+
+      const form = document.createElement('form');
+      form.className = 'bg-white rounded-2xl shadow-xl max-w-3xl w-full p-6 space-y-4';
+
+      const title = document.createElement('div');
+      title.className = 'text-lg font-semibold';
+      title.textContent = isEdit ? '编辑游戏' : '新建游戏';
+      form.appendChild(title);
+
+      const grid = document.createElement('div');
+      grid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+
+      fields.forEach(field => {
+        const wrapper = document.createElement('label');
+        wrapper.className = 'flex flex-col gap-2 text-sm';
+        const text = document.createElement('span');
+        text.className = 'font-medium text-slate-600 flex items-center gap-1';
+        text.innerHTML = field.label + (field.required ? '<span class="text-rose-500">*</span>' : '');
+        wrapper.appendChild(text);
+
+        const value = game ? (game[field.key] ?? '') : '';
+        const isLongText = /desc|简介|description/i.test(field.key);
+        let input;
+        if (isLongText) {
+          input = document.createElement('textarea');
+          input.rows = 4;
+        } else {
+          input = document.createElement('input');
+          input.type = 'text';
+        }
+        input.className = 'w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200';
+        input.name = field.key;
+        input.value = value;
+        if (field.required) input.required = true;
+        wrapper.appendChild(input);
+        grid.appendChild(wrapper);
+      });
+      form.appendChild(grid);
+
+      const actions = document.createElement('div');
+      actions.className = 'flex items-center justify-end gap-3 pt-2';
+      actions.innerHTML = `
+        <button type="button" class="px-4 py-2 rounded-xl border bg-white" data-close>取消</button>
+        <button type="submit" class="px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700">保存</button>`;
+      form.appendChild(actions);
+
+      overlay.appendChild(form);
+      document.body.appendChild(overlay);
+
+      overlay.addEventListener('click', e => {
+        if (e.target === overlay) closeModal();
+      });
+      form.querySelector('[data-close]').addEventListener('click', closeModal);
+
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const result = { _id: game?._id || createId() };
+        for (const field of fields) {
+          result[field.key] = String(formData.get(field.key) || '').trim();
+          if (field.required && !result[field.key]) {
+            alert(`请填写「${field.label}」`);
+            return;
+          }
+        }
+        if (isEdit && index !== null) {
+          games.splice(index, 1, result);
+        } else {
+          games.unshift(result);
+          currentPage = 1;
+        }
+        closeModal();
+        render();
+      });
+
+      function closeModal() {
+        overlay.remove();
+      }
+    }
+
+    function copyGame(game) {
+      const clone = { ...game, _id: createId(), title: game.title ? `${game.title}（副本）` : '' };
+      games.unshift(clone);
+      currentPage = 1;
+      render();
+    }
+
+    function deleteGame(index) {
+      const game = games[index];
+      if (!confirm(`确定删除「${game.title || '未命名游戏'}」吗？`)) return;
+      games.splice(index, 1);
+      render();
+    }
+
+    function openFieldManager() {
+      const overlay = document.createElement('div');
+      overlay.className = 'fixed inset-0 z-50 modal-bg flex items-center justify-center p-4';
+      const container = document.createElement('div');
+      container.className = 'bg-white rounded-2xl shadow-xl max-w-3xl w-full p-6 space-y-4';
+
+      const title = document.createElement('div');
+      title.className = 'text-lg font-semibold';
+      title.textContent = '字段管理';
+      container.appendChild(title);
+
+      const description = document.createElement('p');
+      description.className = 'text-sm text-slate-500';
+      description.textContent = '可拖拽排序、编辑字段名称与键名，设置必填项。键名不可重复，保存后字段立即生效。';
+      container.appendChild(description);
+
+      const list = document.createElement('ul');
+      list.className = 'space-y-3';
+
+      fields.forEach(field => {
+        list.appendChild(createFieldRow(field));
+      });
+      container.appendChild(list);
+
+      const addBtn = document.createElement('button');
+      addBtn.type = 'button';
+      addBtn.className = 'px-3 py-2 rounded-xl border bg-white hover:bg-slate-50 text-sm';
+      addBtn.textContent = '➕ 新增字段';
+      addBtn.addEventListener('click', () => {
+        const newField = { key: '', label: '', required: false };
+        list.appendChild(createFieldRow(newField));
+      });
+      container.appendChild(addBtn);
+
+      const actions = document.createElement('div');
+      actions.className = 'flex justify-end gap-3 pt-2';
+      actions.innerHTML = `
+        <button class="px-4 py-2 rounded-xl border bg-white" data-close>取消</button>
+        <button class="px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700" data-save>保存</button>`;
+      container.appendChild(actions);
+
+      overlay.appendChild(container);
+      document.body.appendChild(overlay);
+
+      overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+      container.querySelector('[data-close]').addEventListener('click', closeModal);
+      container.querySelector('[data-save]').addEventListener('click', saveFields);
+
+      function createFieldRow(field) {
+        const li = document.createElement('li');
+        li.className = 'flex flex-col md:flex-row md:items-center gap-3 border rounded-xl px-4 py-3 bg-slate-50/60';
+        li.draggable = true;
+        li.dataset.originalKey = field.key;
+
+        const drag = document.createElement('div');
+        drag.className = 'drag-handle text-slate-400 md:w-6 flex justify-center text-lg select-none';
+        drag.innerHTML = '☰';
+        li.appendChild(drag);
+
+        const labelWrap = document.createElement('div');
+        labelWrap.className = 'flex-1 flex flex-col gap-1';
+        const labelInput = document.createElement('input');
+        labelInput.type = 'text';
+        labelInput.placeholder = '显示名称 (例：游戏名称)';
+        labelInput.value = field.label || '';
+        labelInput.className = 'rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-200';
+        labelWrap.appendChild(labelInput);
+
+        const keyInput = document.createElement('input');
+        keyInput.type = 'text';
+        keyInput.placeholder = '字段键名 (例：title)';
+        keyInput.value = field.key || '';
+        keyInput.className = 'rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-200';
+        labelWrap.appendChild(keyInput);
+        li.appendChild(labelWrap);
+
+        const requiredWrap = document.createElement('label');
+        requiredWrap.className = 'inline-flex items-center gap-2 text-sm text-slate-600';
+        const requiredInput = document.createElement('input');
+        requiredInput.type = 'checkbox';
+        requiredInput.checked = Boolean(field.required);
+        requiredWrap.appendChild(requiredInput);
+        requiredWrap.appendChild(document.createTextNode('必填'));
+        li.appendChild(requiredWrap);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.type = 'button';
+        deleteBtn.className = 'text-sm text-rose-500 hover:text-rose-600';
+        deleteBtn.textContent = '删除';
+        deleteBtn.addEventListener('click', () => {
+          if (confirm('确定删除该字段？数据不会立即丢失，可重新创建相同键名恢复。')) {
+            li.remove();
+          }
+        });
+        li.appendChild(deleteBtn);
+
+        li.addEventListener('dragstart', () => {
+          li.classList.add('opacity-60');
+          dragData.dragging = li;
+        });
+        li.addEventListener('dragend', () => {
+          li.classList.remove('opacity-60');
+          dragData.dragging = null;
+        });
+        li.addEventListener('dragover', e => {
+          e.preventDefault();
+          const dragging = dragData.dragging;
+          if (!dragging || dragging === li) return;
+          const rect = li.getBoundingClientRect();
+          const insertBefore = (e.clientY - rect.top) < rect.height / 2;
+          if (insertBefore) {
+            li.parentElement.insertBefore(dragging, li);
+          } else {
+            li.parentElement.insertBefore(dragging, li.nextSibling);
+          }
+        });
+
+        li.querySelectorAll('input').forEach(input => {
+          input.addEventListener('keydown', e => e.stopPropagation());
+        });
+
+        return li;
+      }
+
+      const dragData = { dragging: null };
+
+      function saveFields() {
+        const items = Array.from(list.children);
+        if (!items.length) {
+          alert('至少保留一个字段。');
+          return;
+        }
+        const updated = [];
+        const keys = new Set();
+        const renameMap = new Map();
+        for (const li of items) {
+          const [labelInput, keyInput] = li.querySelectorAll('input[type="text"]');
+          const requiredInput = li.querySelector('input[type="checkbox"]');
+          const label = labelInput.value.trim();
+          const key = keyInput.value.trim();
+          if (!label || !key) {
+            alert('字段的显示名称和键名均不能为空。');
+            return;
+          }
+          if (/\s/.test(key)) {
+            alert('键名不能包含空格，请使用驼峰或下划线命名。');
+            return;
+          }
+          if (keys.has(key)) {
+            alert(`字段键名「${key}」重复，请修改。`);
+            return;
+          }
+          keys.add(key);
+          const originalKey = li.dataset.originalKey;
+          if (originalKey && originalKey !== key) {
+            renameMap.set(originalKey, key);
+          }
+          updated.push({ key, label, required: requiredInput.checked });
+        }
+
+        if (!updated.some(field => field.required)) {
+          if (!confirm('当前没有必填字段，是否继续？')) return;
+        }
+
+        if (renameMap.size) {
+          games = games.map(game => {
+            const updatedGame = { ...game };
+            renameMap.forEach((newKey, oldKey) => {
+              if (Object.prototype.hasOwnProperty.call(updatedGame, oldKey)) {
+                updatedGame[newKey] = updatedGame[oldKey];
+                delete updatedGame[oldKey];
+              }
+            });
+            return updatedGame;
+          });
+        }
+
+        fields = updated;
+        closeModal();
+        render();
+      }
+
+      function closeModal() {
+        overlay.remove();
+      }
+    }
+
+    function exportJSON() {
+      const data = { fields, items: games };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      const now = new Date();
+      const filename = `game-library-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}.json`;
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function handleImport(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const content = JSON.parse(e.target.result);
+          let importedFields = fields;
+          let importedItems = games;
+          if (Array.isArray(content)) {
+            importedItems = ensureIds(content);
+            importedFields = buildFieldsFromItems(importedItems);
+          } else if (content && typeof content === 'object') {
+            importedFields = normaliseFields(content.fields || buildFieldsFromItems(content.items || []));
+            importedItems = ensureIds(content.items || []);
+          } else {
+            throw new Error('文件格式不正确');
+          }
+          fields = importedFields;
+          games = importedItems;
+          currentPage = 1;
+          render();
+          alert('导入成功！');
+        } catch (err) {
+          console.error(err);
+          alert('导入失败，请确认文件格式正确。');
+        } finally {
+          event.target.value = '';
+        }
+      };
+      reader.readAsText(file, 'utf-8');
+    }
+
+    function buildFieldsFromItems(items) {
+      const keys = new Set();
+      items.forEach(item => {
+        Object.keys(item).forEach(key => {
+          if (key === '_id') return;
+          keys.add(key);
+        });
+      });
+      if (!keys.size) return [...defaultFields];
+      return Array.from(keys).map(key => ({ key, label: key, required: false }));
+    }
+
+    function resetState() {
+      if (!confirm('将清空本地保存的数据并恢复默认示例，是否继续？')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      state = loadState();
+      fields = state.fields;
+      games = state.items;
+      currentPage = 1;
+      sortState = { key: null, direction: 'asc' };
+      searchInput.value = '';
+      pageSizeSelect.value = '10';
+      render();
+    }
+  </script>
+</body>
+</html>
