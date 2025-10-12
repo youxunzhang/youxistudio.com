@@ -82,7 +82,14 @@
           <div class="text-xs text-slate-400">${escapeHTML(game.image || '')}</div>
         </td>
         <td class="px-4 py-3 align-top">
-          <a href="${escapeAttribute(game.image)}" target="_blank" rel="noopener" class="text-blue-600 hover:underline">${escapeHTML(game.image || '')}</a>
+          <div class="flex items-center gap-3">
+            <div class="thumb-container w-20 h-12 rounded-lg overflow-hidden border border-slate-200 bg-slate-100 flex items-center justify-center">
+              <img class="js-thumb w-full h-full object-cover" alt="${escapeAttribute(game.name || '封面预览')}" loading="lazy" />
+            </div>
+            <div class="min-w-0">
+              <a href="${escapeAttribute(game.image)}" target="_blank" rel="noopener" class="text-blue-600 hover:underline break-all">${escapeHTML(game.image || '')}</a>
+            </div>
+          </div>
         </td>
         <td class="px-4 py-3 align-top">
           <a href="${escapeAttribute(game.link)}" target="_blank" rel="noopener" class="text-blue-600 hover:underline">${escapeHTML(game.link || '')}</a>
@@ -109,6 +116,29 @@
           setStatus(`已删除“${game.name || '未命名'}”。`);
         }
       });
+
+      const thumbImg = row.querySelector('.js-thumb');
+      const thumbContainer = row.querySelector('.thumb-container');
+      if (thumbImg && thumbContainer) {
+        const renderFallback = () => {
+          if (!thumbContainer.querySelector('span')) {
+            thumbImg.remove();
+            const fallback = document.createElement('span');
+            fallback.className = 'text-xs text-slate-400';
+            fallback.textContent = '无封面';
+            thumbContainer.appendChild(fallback);
+          }
+        };
+
+        if (game.image) {
+          thumbImg.src = game.image;
+          thumbImg.addEventListener('error', () => {
+            renderFallback();
+          }, { once: true });
+        } else {
+          renderFallback();
+        }
+      }
 
       fragment.appendChild(row);
     });
