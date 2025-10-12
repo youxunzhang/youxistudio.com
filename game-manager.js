@@ -17,6 +17,8 @@ let statusTimeoutId;
 let iframeNavigationTimer = 0;
 
 const jsonPath = 'img-portal/game-library.json';
+const DEFAULT_GAME_TYPE = 'casualgames';
+const DEFAULT_IFRAME_URL = 'https://gameul.com/';
 
 init();
 
@@ -48,12 +50,18 @@ function normalizePayload(payload) {
 }
 
 function sanitizeGame(game) {
+    const name = String(game?.name ?? '').trim();
+    const type = String(game?.type ?? game?.category ?? '').trim();
+    const image = String(game?.image ?? '').trim();
+    const url = String(game?.url ?? '').trim();
+    const iframe = String(game?.iframe ?? game?.iframeUrl ?? '').trim();
+
     return {
-        name: String(game?.name ?? '').trim(),
-        type: String(game?.type ?? game?.category ?? '').trim(),
-        image: String(game?.image ?? '').trim(),
-        url: String(game?.url ?? '').trim(),
-        iframe: String(game?.iframe ?? game?.iframeUrl ?? '').trim()
+        name,
+        type: type || DEFAULT_GAME_TYPE,
+        image,
+        url,
+        iframe: iframe || DEFAULT_IFRAME_URL
     };
 }
 
