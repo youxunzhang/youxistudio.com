@@ -49,8 +49,10 @@ function normalizePayload(payload) {
 function sanitizeGame(game) {
     return {
         name: String(game?.name ?? '').trim(),
+        type: String(game?.type ?? game?.category ?? '').trim(),
         image: String(game?.image ?? '').trim(),
-        url: String(game?.url ?? '').trim()
+        url: String(game?.url ?? '').trim(),
+        iframe: String(game?.iframe ?? game?.iframeUrl ?? '').trim()
     };
 }
 
@@ -72,9 +74,11 @@ function renderTable() {
         const row = document.createElement('tr');
         row.dataset.index = String(index);
 
-        row.appendChild(createCell(isEditing ? createInput('name', game.name) : document.createTextNode(game.name || '—')));
+        row.appendChild(createCell(isEditing ? createInput('name', game.name) : createTextDisplay(game.name)));
+        row.appendChild(createCell(isEditing ? createInput('type', game.type) : createTextDisplay(game.type)));
         row.appendChild(createCell(isEditing ? createInput('image', game.image) : createLinkPreview(game.image)));
         row.appendChild(createCell(isEditing ? createInput('url', game.url) : createLink(game.url)));
+        row.appendChild(createCell(isEditing ? createInput('iframe', game.iframe) : createLink(game.iframe)));
         row.appendChild(createActionsCell(index, isEditing));
 
         tableBody.appendChild(row);
@@ -83,7 +87,7 @@ function renderTable() {
     if (!dataState.games.length) {
         const emptyRow = document.createElement('tr');
         const cell = document.createElement('td');
-        cell.colSpan = 4;
+        cell.colSpan = 6;
         cell.textContent = '当前没有记录，请使用下方表单添加新游戏。';
         cell.style.textAlign = 'center';
         cell.style.color = 'var(--text-secondary)';
@@ -102,13 +106,32 @@ function createCell(content) {
     return cell;
 }
 
+function createTextDisplay(value) {
+    if (value) {
+        const span = document.createElement('span');
+        span.textContent = value;
+        return span;
+    }
+    const placeholder = document.createElement('span');
+    placeholder.textContent = '—';
+    placeholder.style.color = 'var(--text-muted)';
+    return placeholder;
+}
+
 function createInput(name, value) {
     const input = document.createElement('input');
-    input.type = name === 'name' ? 'text' : 'url';
+    input.type = name === 'name' || name === 'type' ? 'text' : 'url';
     input.name = name;
-    input.required = true;
+    input.required = ['name', 'image', 'url'].includes(name);
     input.value = value;
-    input.placeholder = name === 'name' ? '请输入内容' : 'https://...';
+    const placeholders = {
+        name: '请输入内容',
+        type: '例如：平台跳跃',
+        image: 'https://...',
+        url: 'https://...',
+        iframe: 'https://...'
+    };
+    input.placeholder = placeholders[name] ?? '请输入内容';
     return input;
 }
 
@@ -238,6 +261,13 @@ function validateGame(game) {
     } catch (error) {
         throw new Error('游戏链接不是有效的 URL');
     }
+    if (game.iframe) {
+        try {
+            new URL(game.iframe);
+        } catch (error) {
+            throw new Error('IFRAME 地址不是有效的 URL');
+        }
+    }
 }
 
 tableBody.addEventListener('click', (event) => {
@@ -282,15 +312,19 @@ function handleSave(index) {
         return;
     }
     const nameInput = row.querySelector('input[name="name"]');
+    const typeInput = row.querySelector('input[name="type"]');
     const imageInput = row.querySelector('input[name="image"]');
     const urlInput = row.querySelector('input[name="url"]');
-    if (!nameInput || !imageInput || !urlInput) {
+    const iframeInput = row.querySelector('input[name="iframe"]');
+    if (!nameInput || !typeInput || !imageInput || !urlInput || !iframeInput) {
         return;
     }
     const game = sanitizeGame({
         name: nameInput.value,
+        type: typeInput.value,
         image: imageInput.value,
-        url: urlInput.value
+        url: urlInput.value,
+        iframe: iframeInput.value
     });
 
     try {
@@ -324,8 +358,10 @@ addForm.addEventListener('submit', (event) => {
     const formData = new FormData(addForm);
     const game = sanitizeGame({
         name: String(formData.get('name') ?? ''),
+        type: String(formData.get('type') ?? ''),
         image: String(formData.get('image') ?? ''),
-        url: String(formData.get('url') ?? '')
+        url: String(formData.get('url') ?? ''),
+        iframe: String(formData.get('iframe') ?? '')
     });
     try {
         validateGame(game);
