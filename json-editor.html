@@ -267,7 +267,7 @@
       gamesCount.textContent = state.games.length;
     }
 
-    function loadData(data, message = '已加载数据', variant = 'info') {
+    function loadData(data, message = '已加载数据', variant = 'info', shouldPersist = true) {
       state.meta.title = data.title || '';
       state.meta.subtitle = data.subtitle || '';
       state.games = Array.isArray(data.games) ? data.games.map(item => ({ ...item })) : [];
@@ -275,7 +275,9 @@
       renderMeta();
       renderGames();
       setStatus(message, variant);
-      persist();
+      if (shouldPersist) {
+        persist();
+      }
     }
 
     async function fetchRemoteData() {
@@ -285,33 +287,47 @@
           throw new Error(response.status + ' ' + response.statusText);
         }
         const json = await response.json();
-        return json;
+        return { data: json, fromFallback: false };
       } catch (error) {
         console.error('读取远程 JSON 失败：', error);
         setStatus('读取 data/game-library.json 失败，已加载默认模板。', 'error');
-        return JSON.parse(JSON.stringify(defaultData));
+        return { data: JSON.parse(JSON.stringify(defaultData)), fromFallback: true };
       }
     }
 
     async function init() {
-      let initial = null;
+      setStatus('正在读取 data/game-library.json…', 'info');
+      const { data: remoteData, fromFallback } = await fetchRemoteData();
+      const baseMessage = fromFallback
+        ? '未能读取 data/game-library.json，已载入默认模板。'
+        : '已载入 data/game-library.json，可开始编辑。';
+      const baseVariant = fromFallback ? 'warn' : 'success';
+      loadData(remoteData, baseMessage, baseVariant, false);
+
+      let cachedState = null;
       try {
         const cached = localStorage.getItem(STORAGE_KEY);
         if (cached) {
-          initial = JSON.parse(cached);
-          setStatus('已从本地缓存恢复上次编辑内容。', 'info');
+          cachedState = JSON.parse(cached);
         }
       } catch (error) {
         console.warn('读取本地缓存失败', error);
       }
 
-      if (!initial) {
-        const remote = await fetchRemoteData();
-        initial = remote || defaultData;
-        setStatus('已载入 data/game-library.json。', 'success');
+      if (cachedState) {
+        const matchesRemote = JSON.stringify(cachedState) === JSON.stringify(remoteData);
+        if (!matchesRemote) {
+          const shouldRestore = confirm('检测到上次未导出的编辑内容，是否恢复？');
+          if (shouldRestore) {
+            loadData(cachedState, '已恢复上次编辑内容，请检查后保存。', 'warn');
+            state.dirty = true;
+            return;
+          }
+          localStorage.removeItem(STORAGE_KEY);
+        }
       }
 
-      loadData(initial, '数据已准备就绪，可开始编辑。', 'success');
+      persist();
     }
 
     metaTitleInput.addEventListener('input', () => {
@@ -359,8 +375,12 @@
       if (state.dirty && !confirm('存在未保存的修改，确定要放弃并重新读取原文件吗？')) {
         return;
       }
-      const remote = await fetchRemoteData();
-      loadData(remote, '已重新读取 data/game-library.json。', 'success');
+      const { data: remote, fromFallback } = await fetchRemoteData();
+      const message = fromFallback
+        ? '未能读取 data/game-library.json，已载入默认模板。'
+        : '已重新读取 data/game-library.json。';
+      const variant = fromFallback ? 'warn' : 'success';
+      loadData(remote, message, variant);
     });
 
     btnClearLocal.addEventListener('click', () => {
