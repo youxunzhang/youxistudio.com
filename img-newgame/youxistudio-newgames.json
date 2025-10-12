@@ -262,5 +262,113 @@
     "image": "img-newgame/zombiegun.jpg",
     "link": "http://youxistudio.com",
     "type": "newgame"
+  },
+  {
+    "name": "Paper",
+    "image": "img-newgame/Paper.jpg",
+    "link": "http://youxistudio.com",
+    "type": "newgame"
+  },
+  {
+    "name": "Minecraft",
+    "image": "img-newgame/Minecraft.jpg",
+    "link": "http://youxistudio.com",
+    "type": "newgame"
+  },
+  {
+    "name": "sudoku",
+    "image": "img-newgame/sudoku.jpg",
+    "link": "http://youxistudio.com",
+    "type": "newgame"
+  },
+  {
+    "name": "blockpuzzle3d",
+    "image": "img-newgame/blockpuzzle3d.jpg",
+    "link": "http://youxistudio.com",
+    "type": "newgame"
+  },
+  {
+    "name": "crazymotorcycle",
+    "image": "img-newgame/crazymotorcycle.jpg",
+    "link": "http://youxistudio.com",
+    "type": "newgame"
+  },
+  {
+    "name": "hawaiimatch5",
+    "image": "img-newgame/hawaiimatch5.jpg",
+    "link": "http://youxistudio.com",
+    "type": "newgame"
+  },
+  {
+    "name": "blockdroppingmerge",
+    "image": "img-newgame/blockdroppingmerge.jpg",
+    "link": "http://youxistudio.com",
+    "type": "newgame"
+  },
+  {
+    "name": "parkingfury3d:",
+    "image": "img-newgame/parkingfury3d:.jpg",
+    "link": "http://youxistudio.com",
+    "type": "newgame"
+  },
+  {
+    "name": "nightcity",
+    "image": "img-newgame/nightcity.jpg",
+    "link": "http://youxistudio.com",
+    "type": "newgame"
+  },
+  {
+    "name": "mylittlecity",
+    "image": "img-newgame/mylittlecity.jpg",
+    "link": "http://youxistudio.com",
+    "type": "newgame"
+  },
+  {
+    "name": "matchfind3d",
+    "image": "img-newgame/matchfind3d.jpg",
+    "link": "http://youxistudio.com",
+    "type": "newgame"
+  },
+  {
+    "name": "highschoolmeangirls3",
+    "image": "img-newgame/highschoolmeangirls3.jpg",
+    "link": "http://youxistudio.com",
+    "type": "newgame"
+  },
+  {
+    "name": "fallbean2",
+    "image": "img-newgame/fallbean2.jpg",
+    "link": "http://youxistudio.com",
+    "type": "newgame"
+  },
+  {
+    "name": "bubbleshooterpop",
+    "image": "img-newgame/bubbleshooterpop.jpg",
+    "link": "http://youxistudio.com",
+    "type": "newgame"
+  },
+  {
+    "name": "emojimatch",
+    "image": "img-newgame/emojimatch.jpg",
+    "link": "http://youxistudio.com",
+    "type": "newgame"
+  },
+  {
+    "name": "vexx3m",
+    "image": "img-newgame/vexx3m.jpg",
+    "link": "http://youxistudio.com",
+    "type": "newgame"
+  },
+  {
+    "name": "magicsolitaire",
+    "image": "img-newgame/magicsolitaire.jpg",
+    "link": "http://youxistudio.com",
+    "type": "newgame"
+  },
+  {
+    "name": "farmblockpuzzle",
+    "image": "img-newgame/farmblockpuzzle.jpg",
+    "link": "http://youxistudio.com",
+    "type": "newgame"
   }
 ]
