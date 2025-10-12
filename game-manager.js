@@ -14,6 +14,7 @@ let pristineState = { games: [] };
 let editingIndex = null;
 let hasChanges = false;
 let statusTimeoutId;
+let iframeNavigationTimer = 0;
 
 const jsonPath = 'data/game-library.json';
 
@@ -49,8 +50,10 @@ function normalizePayload(payload) {
 function sanitizeGame(game) {
     return {
         name: String(game?.name ?? '').trim(),
+        type: String(game?.type ?? game?.category ?? '').trim(),
         image: String(game?.image ?? '').trim(),
-        url: String(game?.url ?? '').trim()
+        url: String(game?.url ?? '').trim(),
+        iframe: String(game?.iframe ?? game?.iframeUrl ?? '').trim()
     };
 }
 
@@ -72,9 +75,11 @@ function renderTable() {
         const row = document.createElement('tr');
         row.dataset.index = String(index);
 
-        row.appendChild(createCell(isEditing ? createInput('name', game.name) : document.createTextNode(game.name || '—')));
-        row.appendChild(createCell(isEditing ? createInput('image', game.image) : createLinkPreview(game.image)));
-        row.appendChild(createCell(isEditing ? createInput('url', game.url) : createLink(game.url)));
+        row.appendChild(createCell(isEditing ? createInput('name', game.name) : createTextDisplay(game.name), 'name'));
+        row.appendChild(createCell(isEditing ? createInput('type', game.type) : createTextDisplay(game.type), 'type'));
+        row.appendChild(createCell(isEditing ? createInput('image', game.image) : createLinkPreview(game.image), 'image'));
+        row.appendChild(createCell(isEditing ? createInput('url', game.url) : createLink(game.url), 'url'));
+        row.appendChild(createCell(isEditing ? createInput('iframe', game.iframe) : createLink(game.iframe), 'iframe'));
         row.appendChild(createActionsCell(index, isEditing));
 
         tableBody.appendChild(row);
@@ -83,7 +88,7 @@ function renderTable() {
     if (!dataState.games.length) {
         const emptyRow = document.createElement('tr');
         const cell = document.createElement('td');
-        cell.colSpan = 4;
+        cell.colSpan = 6;
         cell.textContent = '当前没有记录，请使用下方表单添加新游戏。';
         cell.style.textAlign = 'center';
         cell.style.color = 'var(--text-secondary)';
@@ -92,8 +97,11 @@ function renderTable() {
     }
 }
 
-function createCell(content) {
+function createCell(content, field) {
     const cell = document.createElement('td');
+    if (field) {
+        cell.dataset.field = field;
+    }
     if (content instanceof Node) {
         cell.appendChild(content);
     } else {
@@ -102,13 +110,32 @@ function createCell(content) {
     return cell;
 }
 
+function createTextDisplay(value) {
+    if (value) {
+        const span = document.createElement('span');
+        span.textContent = value;
+        return span;
+    }
+    const placeholder = document.createElement('span');
+    placeholder.textContent = '—';
+    placeholder.style.color = 'var(--text-muted)';
+    return placeholder;
+}
+
 function createInput(name, value) {
     const input = document.createElement('input');
-    input.type = name === 'name' ? 'text' : 'url';
+    input.type = name === 'name' || name === 'type' ? 'text' : 'url';
     input.name = name;
-    input.required = true;
+    input.required = ['name', 'image', 'url'].includes(name);
     input.value = value;
-    input.placeholder = name === 'name' ? '请输入内容' : 'https://...';
+    const placeholders = {
+        name: '请输入内容',
+        type: '例如：平台跳跃',
+        image: 'https://...',
+        url: 'https://...',
+        iframe: 'https://...'
+    };
+    input.placeholder = placeholders[name] ?? '请输入内容';
     return input;
 }
 
@@ -159,6 +186,7 @@ function createLinkPreview(url) {
 
 function createActionsCell(index, isEditing) {
     const cell = document.createElement('td');
+    cell.dataset.field = 'actions';
     const actions = document.createElement('div');
     actions.className = 'actions';
 
@@ -238,14 +266,62 @@ function validateGame(game) {
     } catch (error) {
         throw new Error('游戏链接不是有效的 URL');
     }
+    if (game.iframe) {
+        try {
+            new URL(game.iframe);
+        } catch (error) {
+            throw new Error('IFRAME 地址不是有效的 URL');
+        }
+    }
 }
 
 tableBody.addEventListener('click', (event) => {
     const target = event.target;
-    if (!(target instanceof HTMLButtonElement)) {
+    const button = target instanceof Element ? target.closest('button') : null;
+    if (button instanceof HTMLButtonElement) {
+        handleTableAction(button);
         return;
     }
-    const { action, index } = target.dataset;
+    const anchor = target instanceof Element ? target.closest('a') : null;
+    if (!anchor) {
+        return;
+    }
+    const cell = anchor.closest('td');
+    if (!cell || cell.dataset.field !== 'iframe') {
+        return;
+    }
+    if (event.defaultPrevented) {
+        return;
+    }
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+        cancelPendingIframeNavigation();
+        return;
+    }
+    const href = anchor.href;
+    if (!href) {
+        return;
+    }
+
+    cancelPendingIframeNavigation();
+    if (event.detail === 0) {
+        window.open(href, '_blank', 'noopener');
+        return;
+    }
+    if (event.detail > 1) {
+        event.preventDefault();
+        return;
+    }
+
+    event.preventDefault();
+    iframeNavigationTimer = window.setTimeout(() => {
+        window.open(href, '_blank', 'noopener');
+        cancelPendingIframeNavigation();
+    }, 200);
+});
+
+function handleTableAction(button) {
+    cancelPendingIframeNavigation();
+    const { action, index } = button.dataset;
     if (index === undefined) {
         return;
     }
@@ -256,9 +332,7 @@ tableBody.addEventListener('click', (event) => {
 
     switch (action) {
         case 'edit':
-            editingIndex = rowIndex;
-            render();
-            setStatus('正在编辑所选游戏', 'success', 2000);
+            enterEditMode(rowIndex);
             break;
         case 'cancel':
             editingIndex = null;
@@ -274,7 +348,69 @@ tableBody.addEventListener('click', (event) => {
         default:
             break;
     }
+}
+
+tableBody.addEventListener('dblclick', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) {
+        return;
+    }
+    const cell = target.closest('td');
+    if (!cell) {
+        return;
+    }
+    const { field } = cell.dataset;
+    if (!field || !['name', 'type', 'iframe'].includes(field)) {
+        return;
+    }
+    const row = cell.closest('tr');
+    const indexValue = row?.dataset.index;
+    if (!indexValue) {
+        return;
+    }
+    const index = Number.parseInt(indexValue, 10);
+    if (Number.isNaN(index)) {
+        return;
+    }
+    cancelPendingIframeNavigation();
+    event.preventDefault();
+    enterEditMode(index, field);
 });
+
+function enterEditMode(index, focusField = 'name') {
+    if (!Number.isInteger(index) || index < 0 || index >= dataState.games.length) {
+        return;
+    }
+    const alreadyEditing = editingIndex === index;
+    editingIndex = index;
+    if (!alreadyEditing) {
+        render();
+        setStatus('正在编辑所选游戏', 'success', 2000);
+    }
+    focusFieldInput(index, focusField);
+}
+
+function focusFieldInput(index, field) {
+    const schedule = window.requestAnimationFrame ?? ((callback) => window.setTimeout(callback, 0));
+    schedule(() => {
+        const row = tableBody.querySelector(`tr[data-index="${index}"]`);
+        if (!row) {
+            return;
+        }
+        const input = row.querySelector(`input[name="${field}"]`);
+        if (input instanceof HTMLInputElement) {
+            input.focus();
+            input.select();
+        }
+    });
+}
+
+function cancelPendingIframeNavigation() {
+    if (iframeNavigationTimer) {
+        window.clearTimeout(iframeNavigationTimer);
+        iframeNavigationTimer = 0;
+    }
+}
 
 function handleSave(index) {
     const row = tableBody.querySelector(`tr[data-index="${index}"]`);
@@ -282,15 +418,19 @@ function handleSave(index) {
         return;
     }
     const nameInput = row.querySelector('input[name="name"]');
+    const typeInput = row.querySelector('input[name="type"]');
     const imageInput = row.querySelector('input[name="image"]');
     const urlInput = row.querySelector('input[name="url"]');
-    if (!nameInput || !imageInput || !urlInput) {
+    const iframeInput = row.querySelector('input[name="iframe"]');
+    if (!nameInput || !typeInput || !imageInput || !urlInput || !iframeInput) {
         return;
     }
     const game = sanitizeGame({
         name: nameInput.value,
+        type: typeInput.value,
         image: imageInput.value,
-        url: urlInput.value
+        url: urlInput.value,
+        iframe: iframeInput.value
     });
 
     try {
@@ -324,8 +464,10 @@ addForm.addEventListener('submit', (event) => {
     const formData = new FormData(addForm);
     const game = sanitizeGame({
         name: String(formData.get('name') ?? ''),
+        type: String(formData.get('type') ?? ''),
         image: String(formData.get('image') ?? ''),
-        url: String(formData.get('url') ?? '')
+        url: String(formData.get('url') ?? ''),
+        iframe: String(formData.get('iframe') ?? '')
     });
     try {
         validateGame(game);
