@@ -11,6 +11,8 @@ const uploadInput = document.querySelector('#uploadJson');
 
 let dataState = { games: [] };
 let pristineState = { games: [] };
+let payloadShape = createDefaultShape();
+let pristineShape = createDefaultShape();
 let editingIndex = null;
 let hasChanges = false;
 let statusTimeoutId;
@@ -19,6 +21,27 @@ let iframeNavigationTimer = 0;
 const jsonPath = 'img-portal/game-library.json';
 const DEFAULT_GAME_TYPE = 'casualgames';
 const DEFAULT_IFRAME_URL = 'https://gameul.com/';
+const COUNTER_KEYWORDS = new Set([
+    'total',
+    'count',
+    'length',
+    'size',
+    'itemcount',
+    'itemscount',
+    'totalcount',
+    'totalgames',
+    'gamescount',
+    'gamecount'
+]);
+
+function createDefaultShape() {
+    return {
+        type: 'object',
+        gamesPath: ['games'],
+        template: { games: [] },
+        counters: []
+    };
+}
 
 init();
 
@@ -29,8 +52,11 @@ async function init() {
             throw new Error(`无法加载 ${jsonPath}，状态码：${response.status}`);
         }
         const payload = await response.json();
-        dataState = normalizePayload(payload);
-        pristineState = clone(dataState);
+        const { state, shape } = normalizePayload(payload);
+        dataState = state;
+        payloadShape = shape;
+        pristineState = clone(state);
+        pristineShape = cloneShape(shape);
         render();
         setStatus('数据加载完成', 'success', 2500);
     } catch (error) {
@@ -41,20 +67,89 @@ async function init() {
 }
 
 function normalizePayload(payload) {
-    const isObject = payload !== null && typeof payload === 'object';
-    const base = isObject && Array.isArray(payload.games) ? payload : { games: [] };
+    const { games, shape } = extractGamesFromPayload(payload);
+    const sanitizedGames = games
+        .map((game) => sanitizeGame(game))
+        .filter((game) => game.name || game.url || game.image);
     return {
-        ...(isObject ? payload : {}),
-        games: base.games.map((game) => sanitizeGame(game)).filter((game) => game.name || game.url)
+        state: { games: sanitizedGames },
+        shape
     };
 }
 
 function sanitizeGame(game) {
-    const name = String(game?.name ?? '').trim();
-    const type = String(game?.type ?? game?.category ?? '').trim();
-    const image = String(game?.image ?? '').trim();
-    const url = String(game?.url ?? '').trim();
-    const iframe = String(game?.iframe ?? game?.iframeUrl ?? '').trim();
+    const accessor = createAccessor(game);
+    const name = String(accessor.get([
+        'name',
+        'title',
+        'gameName',
+        'gameTitle',
+        'label'
+    ]) ?? '').trim();
+    const type = String(accessor.get([
+        'type',
+        'category',
+        'genre',
+        'gameType',
+        'tag'
+    ]) ?? '').trim();
+    const image = String(accessor.get([
+        'image',
+        'imageUrl',
+        'imageURL',
+        'thumbnail',
+        'thumbnailUrl',
+        'thumbnail.src',
+        'thumbnail.url',
+        'cover',
+        'coverUrl',
+        'coverImage',
+        'cover.src',
+        'cover.url',
+        'poster',
+        'icon',
+        'img',
+        'artwork',
+        'assets.cover',
+        'assets.cover.url',
+        'media.cover',
+        'media.cover.url',
+        'media.thumbnail',
+        'media.thumbnail.url',
+        'image.src'
+    ]) ?? '').trim();
+    const url = String(accessor.get([
+        'url',
+        'link',
+        'href',
+        'play',
+        'playUrl',
+        'playURL',
+        'playLink',
+        'play.url',
+        'links.play',
+        'links.playUrl',
+        'projectUrl',
+        'siteUrl',
+        'pageUrl',
+        'gameUrl',
+        'urls.play'
+    ]) ?? '').trim();
+    const iframe = String(accessor.get([
+        'iframe',
+        'iframeUrl',
+        'iframeURL',
+        'iframeLink',
+        'iframe.url',
+        'iframe.src',
+        'embed',
+        'embedUrl',
+        'embedURL',
+        'embedLink',
+        'embed.src',
+        'gameIframe',
+        'iframeSrc'
+    ]) ?? '').trim();
 
     return {
         name,
@@ -67,6 +162,15 @@ function sanitizeGame(game) {
 
 function clone(target) {
     return JSON.parse(JSON.stringify(target));
+}
+
+function cloneShape(shape) {
+    return {
+        type: shape?.type ?? 'object',
+        gamesPath: Array.isArray(shape?.gamesPath) ? [...shape.gamesPath] : ['games'],
+        template: shape?.template ? clone(shape.template) : { games: [] },
+        counters: Array.isArray(shape?.counters) ? shape.counters.map((path) => [...path]) : []
+    };
 }
 
 function render() {
@@ -221,7 +325,7 @@ function createActionButton(label, style, action, index) {
 }
 
 function updatePreview() {
-    jsonPreview.textContent = JSON.stringify(dataState, null, 2);
+    jsonPreview.textContent = JSON.stringify(serializeState(dataState, payloadShape), null, 2);
 }
 
 function updateGameCount() {
@@ -229,9 +333,14 @@ function updateGameCount() {
 }
 
 function syncDirtyState() {
-    const current = JSON.stringify(dataState);
-    const pristine = JSON.stringify(pristineState);
-    hasChanges = current !== pristine;
+    try {
+        const current = JSON.stringify(serializeState(dataState, payloadShape));
+        const pristine = JSON.stringify(serializeState(pristineState, pristineShape));
+        hasChanges = current !== pristine;
+    } catch (error) {
+        console.error(error);
+        hasChanges = true;
+    }
     unsavedIndicator.hidden = !hasChanges;
 }
 
@@ -489,7 +598,8 @@ addForm.addEventListener('submit', (event) => {
 });
 
 downloadBtn.addEventListener('click', () => {
-    const blob = new Blob([JSON.stringify(dataState, null, 2)], { type: 'application/json' });
+    const serialized = serializeState(dataState, payloadShape);
+    const blob = new Blob([JSON.stringify(serialized, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = url;
@@ -503,6 +613,7 @@ downloadBtn.addEventListener('click', () => {
 
 resetBtn.addEventListener('click', () => {
     dataState = clone(pristineState);
+    payloadShape = cloneShape(pristineShape);
     editingIndex = null;
     render();
     setStatus('数据已还原至初始状态', 'success', 2500);
@@ -520,10 +631,12 @@ uploadInput.addEventListener('change', async (event) => {
     try {
         const text = await file.text();
         const payload = JSON.parse(text);
-        const normalized = normalizePayload(payload);
-        normalized.games.forEach(validateGame);
-        dataState = normalized;
-        pristineState = clone(normalized);
+        const { state, shape } = normalizePayload(payload);
+        state.games.forEach(validateGame);
+        dataState = state;
+        payloadShape = shape;
+        pristineState = clone(state);
+        pristineShape = cloneShape(shape);
         editingIndex = null;
         render();
         setStatus(`已导入 ${file.name}`, 'success', 2500);
@@ -542,3 +655,270 @@ window.addEventListener('beforeunload', (event) => {
     event.preventDefault();
     event.returnValue = '';
 });
+
+function extractGamesFromPayload(payload) {
+    if (Array.isArray(payload)) {
+        return {
+            games: payload,
+            shape: {
+                type: 'array',
+                gamesPath: [],
+                template: [],
+                counters: []
+            }
+        };
+    }
+
+    if (!payload || typeof payload !== 'object') {
+        return {
+            games: [],
+            shape: createDefaultShape()
+        };
+    }
+
+    const candidate = locateGamesArray(payload);
+    if (!candidate) {
+        throw new Error('无法在 JSON 文件中找到游戏列表，请确认文件结构。');
+    }
+
+    const template = clone(payload);
+    setDeep(template, candidate.path, []);
+    const counters = findCounterPaths(payload, Array.isArray(candidate.array) ? candidate.array.length : 0);
+
+    return {
+        games: Array.isArray(candidate.array) ? candidate.array : [],
+        shape: {
+            type: 'object',
+            gamesPath: candidate.path,
+            template,
+            counters
+        }
+    };
+}
+
+function locateGamesArray(payload) {
+    const preferredPaths = [
+        ['games'],
+        ['list'],
+        ['items'],
+        ['data', 'games'],
+        ['data', 'list'],
+        ['data', 'items'],
+        ['data', 'results'],
+        ['data', 'records'],
+        ['library'],
+        ['response', 'games'],
+        ['payload', 'games'],
+        ['payload', 'items'],
+        ['results'],
+        ['records'],
+        ['entries']
+    ];
+
+    for (const path of preferredPaths) {
+        const value = getDeep(payload, path);
+        if (Array.isArray(value)) {
+            return { path, array: value };
+        }
+    }
+
+    return findBestArrayMatch(payload);
+}
+
+function findBestArrayMatch(payload) {
+    const queue = [{ node: payload, path: [], depth: 0 }];
+    let best = null;
+
+    while (queue.length) {
+        const { node, path, depth } = queue.shift();
+        if (Array.isArray(node)) {
+            const score = scoreArrayCandidate(node, path, depth);
+            if (score < 0) {
+                continue;
+            }
+            if (!best || score > best.score) {
+                best = { path, array: node, score };
+            }
+            continue;
+        }
+        if (!node || typeof node !== 'object' || depth > 6) {
+            continue;
+        }
+        for (const [key, value] of Object.entries(node)) {
+            queue.push({ node: value, path: [...path, key], depth: depth + 1 });
+        }
+    }
+
+    return best;
+}
+
+function scoreArrayCandidate(array, path, depth) {
+    if (!Array.isArray(array)) {
+        return -1;
+    }
+    const pathScore = path.reduce((score, segment, index) => {
+        const lower = String(segment).toLowerCase();
+        if (index === path.length - 1 && ['games', 'items', 'list', 'entries', 'records', 'results'].includes(lower)) {
+            return score + 6;
+        }
+        if (['data', 'payload', 'response'].includes(lower)) {
+            return score + 2;
+        }
+        return score + 1;
+    }, 0);
+    let contentScore = 0;
+    for (const item of array) {
+        if (item && typeof item === 'object') {
+            const accessor = createAccessor(item);
+            if (accessor.get(['name', 'title', 'gameName', 'gameTitle'])) {
+                contentScore += 4;
+            }
+            if (accessor.get(['image', 'thumbnail', 'cover'])) {
+                contentScore += 2;
+            }
+            if (accessor.get(['url', 'link', 'playUrl'])) {
+                contentScore += 2;
+            }
+        }
+        if (contentScore >= 8) {
+            break;
+        }
+    }
+    const depthPenalty = depth * 0.5;
+    return pathScore + contentScore - depthPenalty;
+}
+
+function findCounterPaths(target, length) {
+    if (!target || typeof target !== 'object') {
+        return [];
+    }
+    const paths = [];
+    const stack = [{ node: target, path: [] }];
+    while (stack.length) {
+        const { node, path } = stack.pop();
+        if (!node || typeof node !== 'object') {
+            continue;
+        }
+        for (const [key, value] of Object.entries(node)) {
+            const nextPath = [...path, key];
+            if (typeof value === 'number') {
+                const keyword = key.toLowerCase();
+                if (COUNTER_KEYWORDS.has(keyword) && (value === length || value === 0)) {
+                    paths.push(nextPath);
+                }
+            } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+                stack.push({ node: value, path: nextPath });
+            }
+        }
+    }
+    return paths;
+}
+
+function getDeep(target, path) {
+    return path.reduce((current, segment) => {
+        if (!current || typeof current !== 'object') {
+            return undefined;
+        }
+        if (Object.prototype.hasOwnProperty.call(current, segment)) {
+            return current[segment];
+        }
+        const lowerSegment = String(segment).toLowerCase();
+        const matchedKey = Object.keys(current).find((key) => key.toLowerCase() === lowerSegment);
+        return matchedKey ? current[matchedKey] : undefined;
+    }, target);
+}
+
+function setDeep(target, path, value) {
+    if (!path.length) {
+        return;
+    }
+    let cursor = target;
+    for (let index = 0; index < path.length - 1; index += 1) {
+        const segment = path[index];
+        if (!cursor[segment] || typeof cursor[segment] !== 'object') {
+            cursor[segment] = {};
+        }
+        cursor = cursor[segment];
+    }
+    cursor[path[path.length - 1]] = value;
+}
+
+function serializeState(state, shape = payloadShape) {
+    const safeShape = shape ?? createDefaultShape();
+    const games = state.games.map((game) => ({
+        name: game.name,
+        type: game.type || DEFAULT_GAME_TYPE,
+        image: game.image,
+        url: game.url,
+        iframe: game.iframe || DEFAULT_IFRAME_URL
+    }));
+
+    if (safeShape.type === 'array') {
+        return games;
+    }
+
+    const output = safeShape.template ? clone(safeShape.template) : { games: [] };
+    setDeep(output, safeShape.gamesPath ?? ['games'], games);
+    if (Array.isArray(safeShape.counters)) {
+        for (const counterPath of safeShape.counters) {
+            setDeep(output, counterPath, games.length);
+        }
+    }
+    return output;
+}
+
+function createAccessor(record) {
+    const source = (record && typeof record === 'object') ? record : {};
+    const lookup = new Map();
+    Object.keys(source).forEach((key) => {
+        lookup.set(key.toLowerCase(), source[key]);
+    });
+
+    function getNested(path) {
+        const segments = path.split('.');
+        let cursor = source;
+        for (const segment of segments) {
+            if (!cursor || typeof cursor !== 'object') {
+                return undefined;
+            }
+            if (Object.prototype.hasOwnProperty.call(cursor, segment)) {
+                cursor = cursor[segment];
+            } else {
+                const matchedKey = Object.keys(cursor).find((key) => key.toLowerCase() === segment.toLowerCase());
+                cursor = matchedKey ? cursor[matchedKey] : undefined;
+            }
+        }
+        return cursor;
+    }
+
+    return {
+        get(aliases) {
+            for (const alias of aliases) {
+                if (!alias) {
+                    continue;
+                }
+                if (alias.includes('.')) {
+                    const nested = getNested(alias);
+                    if (nested !== undefined && nested !== null && String(nested).trim() !== '') {
+                        return nested;
+                    }
+                    continue;
+                }
+                if (Object.prototype.hasOwnProperty.call(source, alias)) {
+                    const value = source[alias];
+                    if (value !== undefined && value !== null && String(value).trim() !== '') {
+                        return value;
+                    }
+                }
+                const lowerAlias = alias.toLowerCase();
+                if (lookup.has(lowerAlias)) {
+                    const value = lookup.get(lowerAlias);
+                    if (value !== undefined && value !== null && String(value).trim() !== '') {
+                        return value;
+                    }
+                }
+            }
+            return '';
+        }
+    };
+}
