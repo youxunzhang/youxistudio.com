@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏数据总览 | Shadowmilk Scratch</title>
+    <meta name="description" content="直观浏览和检索 Shadowmilk 游戏库的数据集，包括标题、分类、链接等详细信息。">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="logo" href="index.html">Shadowmilk Scratch</a>
+            <nav class="site-nav" aria-label="主要导航">
+                <a href="index.html#games">全部游戏</a>
+                <a href="https://scratch.mit.edu" target="_blank" rel="noopener">Scratch 官网</a>
+                <a href="latest-games.html">最新游戏</a>
+                <a href="game-detail.html?id=paper-minecraft">热门推荐</a>
+                <a href="sprunki.html">Sprunki 专区</a>
+                <a href="zoo-3dcube.html">Zoo 3D Cube</a>
+                <a href="game-sites.html">游戏站榜单</a>
+                <a href="game-navigation.html">软件导航</a>
+                <a href="portal-game.html">Portal 合集</a>
+                <a href="database.html" aria-current="page">游戏数据库</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page database-page" id="game-database">
+        <div class="container">
+            <section class="database-hero" aria-labelledby="database-hero-title">
+                <p class="eyebrow">GAME LIBRARY DATABASE</p>
+                <h1 id="database-hero-title">游戏数据总览</h1>
+                <p id="database-hero-subtitle" class="database-hero__subtitle">正在读取 <code>data/game-library.json</code>，请稍候…</p>
+            </section>
+
+            <section class="database-summary" aria-label="数据概览" aria-live="polite">
+                <div class="database-summary__stat">
+                    <p class="database-summary__label">合集标题</p>
+                    <p id="databaseTitle" class="database-summary__value">—</p>
+                </div>
+                <div class="database-summary__stat">
+                    <p class="database-summary__label">总游戏数</p>
+                    <p id="databaseCount" class="database-summary__value">0</p>
+                </div>
+                <div class="database-summary__stat">
+                    <p class="database-summary__label">覆盖分类</p>
+                    <p id="databaseCategories" class="database-summary__value">—</p>
+                </div>
+                <div class="database-summary__stat">
+                    <p class="database-summary__label">数据状态</p>
+                    <p id="databaseStatus" class="database-summary__value">正在载入…</p>
+                </div>
+            </section>
+
+            <section class="database-table" aria-labelledby="database-table-title" aria-live="polite">
+                <div class="database-table__header">
+                    <h2 id="database-table-title">游戏条目列表</h2>
+                    <p class="database-table__caption">数据来源：<code>data/game-library.json</code>。点击链接可在新标签页打开游戏。</p>
+                </div>
+                <div class="database-table__wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">游戏</th>
+                                <th scope="col">分类</th>
+                                <th scope="col">访问链接</th>
+                            </tr>
+                        </thead>
+                        <tbody id="databaseTableBody">
+                            <tr>
+                                <td colspan="4" class="database-table__placeholder">正在载入数据…</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>Shadowmilk Scratch Arcade · 一起守护 Scratch 的创意与乐趣</p>
+            <div class="footer-links">
+                <a href="https://scratch.mit.edu/parents" target="_blank" rel="noopener">家长指引</a>
+                <a href="https://scratch.mit.edu/community_guidelines" target="_blank" rel="noopener">社区守则</a>
+                <a href="mailto:hello@shadowmilk.org">联系站长</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const titleEl = document.getElementById('databaseTitle');
+            const countEl = document.getElementById('databaseCount');
+            const categoriesEl = document.getElementById('databaseCategories');
+            const statusEl = document.getElementById('databaseStatus');
+            const heroTitleEl = document.getElementById('database-hero-title');
+            const heroSubtitleEl = document.getElementById('database-hero-subtitle');
+            const tableBody = document.getElementById('databaseTableBody');
+
+            async function loadGameLibrary() {
+                try {
+                    statusEl.textContent = '正在载入…';
+                    const response = await fetch('data/game-library.json', { cache: 'no-cache' });
+                    if (!response.ok) {
+                        throw new Error(`无法获取数据：${response.status}`);
+                    }
+
+                    const catalog = await response.json();
+                    const games = Array.isArray(catalog.games) ? catalog.games : [];
+
+                    document.title = `${catalog.title || '游戏数据总览'} | Shadowmilk Scratch`;
+                    heroTitleEl.textContent = catalog.title || '游戏数据总览';
+                    heroSubtitleEl.textContent = catalog.subtitle || '来自 data/game-library.json 的数据集';
+                    titleEl.textContent = catalog.title || '—';
+                    countEl.textContent = games.length.toString();
+
+                    const categories = [...new Set(games.map(game => game.category || '未分类'))]
+                        .sort((a, b) => a.localeCompare(b, 'zh-Hans'));
+                    categoriesEl.textContent = categories.length ? categories.join(' / ') : '—';
+                    statusEl.textContent = `成功载入 ${games.length} 款游戏`;
+
+                    const fragment = document.createDocumentFragment();
+                    games.forEach((game, index) => {
+                        const row = document.createElement('tr');
+
+                        const indexCell = document.createElement('td');
+                        indexCell.className = 'database-table__index';
+                        indexCell.textContent = String(index + 1);
+                        row.appendChild(indexCell);
+
+                        const gameCell = document.createElement('td');
+                        gameCell.className = 'database-table__game';
+
+                        const media = document.createElement('div');
+                        media.className = 'database-table__media';
+
+                        if (game.thumbnail) {
+                            const image = document.createElement('img');
+                            image.src = game.thumbnail;
+                            image.alt = game.title ? `${game.title} 缩略图` : '游戏缩略图';
+                            image.loading = 'lazy';
+                            media.appendChild(image);
+                        }
+
+                        const info = document.createElement('div');
+                        info.className = 'database-table__info';
+
+                        const name = document.createElement('p');
+                        name.className = 'database-table__title';
+                        name.textContent = game.title || '未命名游戏';
+                        info.appendChild(name);
+
+                        if (game.slug) {
+                            const slug = document.createElement('p');
+                            slug.className = 'database-table__meta';
+                            slug.textContent = game.slug;
+                            info.appendChild(slug);
+                        }
+
+                        media.appendChild(info);
+                        gameCell.appendChild(media);
+                        row.appendChild(gameCell);
+
+                        const categoryCell = document.createElement('td');
+                        categoryCell.className = 'database-table__category';
+                        categoryCell.textContent = game.category || '未分类';
+                        row.appendChild(categoryCell);
+
+                        const linkCell = document.createElement('td');
+                        linkCell.className = 'database-table__link';
+                        if (game.url) {
+                            const anchor = document.createElement('a');
+                            anchor.href = game.url;
+                            anchor.target = '_blank';
+                            anchor.rel = 'noopener';
+                            anchor.textContent = '打开游戏';
+                            linkCell.appendChild(anchor);
+                        } else {
+                            linkCell.textContent = '—';
+                        }
+                        row.appendChild(linkCell);
+
+                        fragment.appendChild(row);
+                    });
+
+                    tableBody.innerHTML = '';
+                    tableBody.appendChild(fragment);
+                } catch (error) {
+                    console.error(error);
+                    statusEl.textContent = '载入失败，请稍后重试';
+                    tableBody.innerHTML = '<tr><td colspan="4" class="database-table__placeholder">未能读取数据文件。</td></tr>';
+                }
+            }
+
+            loadGameLibrary();
+        });
+    </script>
+</body>
+</html>
