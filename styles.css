@@ -358,6 +358,57 @@ button {
     letter-spacing: 0.02em;
 }
 
+.newgame-hero {
+    margin: 3rem 0 2.5rem;
+    display: grid;
+    gap: 1.25rem;
+    max-width: 720px;
+}
+
+.newgame-hero h1 {
+    margin: 0;
+    font-size: clamp(2rem, 3vw, 2.6rem);
+    line-height: 1.2;
+}
+
+.newgame-hero p {
+    margin: 0;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.newgame-status {
+    font-size: 0.95rem;
+}
+
+.newgame-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.section-subtitle {
+    margin: 0.4rem 0 0;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+a.game-card {
+    text-decoration: none;
+    color: inherit;
+}
+
+a.game-card:focus-visible {
+    outline: 3px solid var(--brand);
+    outline-offset: 3px;
+}
+
+@media (max-width: 768px) {
+    .newgame-hero {
+        margin: 2.5rem 0 2rem;
+    }
+}
+
 .game-card__footer {
     padding: 0 1.35rem 1.35rem;
     display: flex;
