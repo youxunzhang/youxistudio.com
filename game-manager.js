@@ -16,7 +16,7 @@ let hasChanges = false;
 let statusTimeoutId;
 let iframeNavigationTimer = 0;
 
-const jsonPath = 'data/game-library.json';
+const jsonPath = 'img-portal/game-library.json';
 
 init();
 
