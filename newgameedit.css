@@ -1,0 +1,86 @@
+.newgameedit-page .page-header p {
+    max-width: 720px;
+}
+
+.newgameedit-actions {
+    margin-top: 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.newgameedit-actions button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.newgameedit-table .cover-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.newgameedit-table .cover-thumb {
+    width: 72px;
+    height: 72px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface-strong);
+    object-fit: cover;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.newgameedit-table .cover-thumb[data-placeholder="true"] {
+    object-fit: contain;
+    padding: 0.35rem;
+    background: var(--surface-strong);
+}
+
+.newgameedit-table .cover-thumb:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 18px rgba(15, 23, 42, 0.12);
+}
+
+.newgameedit-table .row-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.newgameedit-table .row-actions button {
+    min-width: 2.5rem;
+    justify-content: center;
+}
+
+.newgameedit-table .row-actions .icon-only {
+    padding-inline: 0.55rem;
+}
+
+.newgameedit-table .empty-cell {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 2.5rem 1rem;
+    font-size: 0.95rem;
+}
+
+.newgameedit-page button:disabled {
+    opacity: 0.45;
+    pointer-events: none;
+    transform: none;
+    box-shadow: none;
+}
+
+@media (max-width: 720px) {
+    .newgameedit-table .cover-cell {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .newgameedit-table .cover-thumb {
+        width: 100%;
+        max-width: 220px;
+        height: auto;
+    }
+}

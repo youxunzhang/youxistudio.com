@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新游速递 | Shadowmilk Scratch</title>
+    <meta name="description" content="Shadowmilk Scratch 新游速递为你整理最新上线的网页小游戏，一次浏览即可获取完整封面与名称。">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="logo" href="index.html">Shadowmilk Scratch</a>
+            <nav class="site-nav" aria-label="主要导航">
+                <a href="index.html">首页</a>
+                <a href="latest-games.html">最新游戏</a>
+                <a href="newgame.html" aria-current="page">新游速递</a>
+                <a href="game-sites.html">游戏站榜单</a>
+                <a href="game-navigation.html">软件导航</a>
+                <a href="sprunki.html">Sprunki 专区</a>
+                <a href="scratch-scraper.html">游戏抓取</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page" id="new-games">
+        <div class="container">
+            <section class="newgame-hero" aria-labelledby="new-games-title">
+                <p class="eyebrow">SHADOWMILK NEW ARRIVALS</p>
+                <h1 id="new-games-title">最新上线的网页小游戏一览</h1>
+                <p>数据来自 Shadowmilk 内部的小游戏收录库，每日自动同步更新。轻松浏览封面与名称，快速找到下一款想玩的作品。</p>
+                <p id="newGamesStatus" class="newgame-status" aria-live="polite">正在加载最新游戏数据…</p>
+            </section>
+
+            <section class="newgame-list" aria-labelledby="newgame-list-title">
+                <div class="section-header">
+                    <div>
+                        <h2 id="newgame-list-title">新游精选列表</h2>
+                        <p class="section-subtitle">图文列表支持快速扫描与点击访问，每张卡片都包含官方提供的最新封面。</p>
+                    </div>
+                </div>
+                <div id="newGamesGrid" class="games-grid" aria-live="polite" aria-busy="true"></div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>Shadowmilk Scratch Arcade · 一起守护 Scratch 的创意与乐趣</p>
+            <div class="footer-links">
+                <a href="https://scratch.mit.edu/parents" target="_blank" rel="noopener">家长指引</a>
+                <a href="https://scratch.mit.edu/community_guidelines" target="_blank" rel="noopener">社区守则</a>
+                <a href="mailto:hello@shadowmilk.org">联系站长</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="newgame.js"></script>
+</body>
+</html>

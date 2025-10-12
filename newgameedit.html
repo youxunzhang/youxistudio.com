@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新游封面编辑 · Shadowmilk Scratch</title>
+    <meta name="description" content="管理 Shadowmilk Scratch 新游速递封面清单，支持快速预览、编辑与导出 JSON 数据。">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="game-manager.css">
+    <link rel="stylesheet" href="newgameedit.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="logo" href="index.html">Shadowmilk Scratch</a>
+            <nav class="site-nav" aria-label="主要导航">
+                <a href="index.html#games">全部游戏</a>
+                <a href="https://scratch.mit.edu" target="_blank" rel="noopener">Scratch 官网</a>
+                <a href="latest-games.html">最新游戏</a>
+                <a href="newgame.html">新游速递</a>
+                <a href="games/index.html">热门专题</a>
+                <a href="game-detail.html?id=paper-minecraft">热门推荐</a>
+                <a href="sprunki.html">Sprunki 专区</a>
+                <a href="zoo-3dcube.html">Zoo 3D Cube</a>
+                <a href="game-sites.html">游戏站榜单</a>
+                <a href="index.html#iframe-games">IFRAME 游戏</a>
+                <a href="game-navigation.html">软件导航</a>
+                <a href="scratch-scraper.html">游戏抓取</a>
+                <a href="game-manager.html">JSON 管理</a>
+                <a href="newgameedit.html" aria-current="page">新游封面编辑</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page newgameedit-page" id="newgameedit">
+        <div class="container">
+            <div class="page-header">
+                <p class="eyebrow">NEW GAME COVER LIBRARY</p>
+                <h1>管理新游封面清单</h1>
+                <p>集中维护 <code>img-newgame/youxistudio-newgames.json</code> 内的封面与跳转链接。每条记录都带有即时缩略图，方便快速核对是否匹配对应资源。</p>
+            </div>
+
+            <div class="editor-layout">
+                <section class="editor-card" aria-labelledby="coverTableHeading">
+                    <h2 id="coverTableHeading">封面地址清单</h2>
+                    <div class="summary">
+                        <span id="entryCount">当前条目：0</span>
+                        <span id="unsavedNotice" hidden>提示：存在未导出的更改</span>
+                    </div>
+                    <div class="table-wrapper" role="region" aria-live="polite">
+                        <table class="newgameedit-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">游戏名称</th>
+                                    <th scope="col">封面地址</th>
+                                    <th scope="col">跳转链接</th>
+                                    <th scope="col">类型</th>
+                                    <th scope="col" style="width: 160px;">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="coverTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="newgameedit-actions" role="group" aria-label="操作工具">
+                        <button type="button" class="secondary" id="addEntry">➕ 新增记录</button>
+                        <button type="button" class="secondary" id="importTrigger">📥 导入 JSON</button>
+                        <button type="button" class="secondary" id="reloadData">⟳ 重新加载</button>
+                        <button type="button" class="primary" id="downloadJson">💾 下载 JSON</button>
+                        <input type="file" id="importJson" accept="application/json" hidden>
+                    </div>
+                    <div id="statusMessage" class="status" role="status" aria-live="polite"></div>
+                </section>
+
+                <aside class="editor-card" aria-labelledby="previewHeading">
+                    <h2 id="previewHeading">JSON 预览</h2>
+                    <p class="helper-text">预览内容随更改实时更新，可直接复制或搭配“下载 JSON”导出完整文件。</p>
+                    <pre id="jsonPreview" class="json-preview" tabindex="0">[]</pre>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>Shadowmilk Scratch Arcade · 一起守护 Scratch 的创意与乐趣</p>
+            <div class="footer-links">
+                <a href="https://scratch.mit.edu/parents" target="_blank" rel="noopener">家长指引</a>
+                <a href="https://scratch.mit.edu/community_guidelines" target="_blank" rel="noopener">社区守则</a>
+                <a href="mailto:hello@shadowmilk.org">联系站长</a>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="newgameedit.js"></script>
+</body>
+</html>
