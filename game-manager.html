@@ -49,8 +49,10 @@
                             <thead>
                                 <tr>
                                     <th scope="col">游戏名称</th>
+                                    <th scope="col">游戏类型</th>
                                     <th scope="col">封面图片地址</th>
                                     <th scope="col">试玩链接</th>
+                                    <th scope="col">IFRAME 地址</th>
                                     <th scope="col" style="width: 160px;">操作</th>
                                 </tr>
                             </thead>
@@ -69,12 +71,20 @@
                                 <input type="text" id="newGameName" name="name" required placeholder="例如：Paper Minecraft">
                             </label>
                             <label>
+                                <span>游戏类型</span>
+                                <input type="text" id="newGameType" name="type" placeholder="例如：平台跳跃">
+                            </label>
+                            <label>
                                 <span>封面图片地址</span>
                                 <input type="url" id="newGameImage" name="image" required placeholder="https://...">
                             </label>
                             <label>
                                 <span>试玩链接</span>
                                 <input type="url" id="newGameUrl" name="url" required placeholder="https://...">
+                            </label>
+                            <label>
+                                <span>IFRAME 地址</span>
+                                <input type="url" id="newGameIframe" name="iframe" placeholder="https://...">
                             </label>
                         </div>
                         <div class="actions">
