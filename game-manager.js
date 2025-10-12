@@ -47,9 +47,11 @@ function normalizePayload(payload) {
 }
 
 function sanitizeGame(game) {
+    const DEFAULT_TYPE = 'IFRAM游戏';
+    const type = String(game?.type ?? game?.category ?? '').trim();
     return {
         name: String(game?.name ?? '').trim(),
-        type: String(game?.type ?? game?.category ?? '').trim(),
+        type: type || DEFAULT_TYPE,
         image: String(game?.image ?? '').trim(),
         url: String(game?.url ?? '').trim(),
         iframe: String(game?.iframe ?? game?.iframeUrl ?? '').trim()
