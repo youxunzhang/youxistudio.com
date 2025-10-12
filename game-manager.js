@@ -77,90 +77,218 @@ function normalizePayload(payload) {
     };
 }
 
-function sanitizeGame(game) {
-    const accessor = createAccessor(game);
-    const name = String(accessor.get([
-        'name',
-        'title',
-        'gameName',
-        'gameTitle',
-        'label'
-    ]) ?? '').trim();
-    const type = String(accessor.get([
-        'type',
-        'category',
-        'genre',
-        'gameType',
-        'tag'
-    ]) ?? '').trim();
-    const image = String(accessor.get([
-        'image',
-        'imageUrl',
-        'imageURL',
-        'thumbnail',
-        'thumbnailUrl',
-        'thumbnail.src',
-        'thumbnail.url',
-        'cover',
-        'coverUrl',
-        'coverImage',
-        'cover.src',
-        'cover.url',
-        'poster',
-        'icon',
-        'img',
-        'artwork',
-        'assets.cover',
-        'assets.cover.url',
-        'media.cover',
-        'media.cover.url',
-        'media.thumbnail',
-        'media.thumbnail.url',
-        'image.src'
-    ]) ?? '').trim();
-    const url = String(accessor.get([
-        'url',
-        'link',
-        'href',
-        'play',
-        'playUrl',
-        'playURL',
-        'playLink',
-        'play.url',
-        'links.play',
-        'links.playUrl',
-        'projectUrl',
-        'siteUrl',
-        'pageUrl',
-        'gameUrl',
-        'urls.play'
-    ]) ?? '').trim();
-    const iframe = String(accessor.get([
-        'iframe',
-        'iframeUrl',
-        'iframeURL',
-        'iframeLink',
-        'iframe.url',
-        'iframe.src',
-        'embed',
-        'embedUrl',
-        'embedURL',
-        'embedLink',
-        'embed.src',
-        'gameIframe',
-        'iframeSrc'
-    ]) ?? '').trim();
+function sanitizeGame(game, previous = null) {
+    const source = (game && typeof game === 'object' && !Array.isArray(game)) ? game : {};
+    const prior = (previous && typeof previous === 'object') ? previous : null;
+    const fieldAliases = {
+        name: ['title', 'gameName', 'gameTitle', 'label'],
+        type: ['category', 'genre', 'gameType', 'tag'],
+        image: [
+            'imageUrl',
+            'imageURL',
+            'thumbnail',
+            'thumbnailUrl',
+            'thumbnail.src',
+            'thumbnail.url',
+            'cover',
+            'coverUrl',
+            'coverImage',
+            'cover.src',
+            'cover.url',
+            'poster',
+            'icon',
+            'img',
+            'artwork',
+            'assets.cover',
+            'assets.cover.url',
+            'media.cover',
+            'media.cover.url',
+            'media.thumbnail',
+            'media.thumbnail.url',
+            'image.src'
+        ],
+        url: [
+            'link',
+            'href',
+            'play',
+            'playUrl',
+            'playURL',
+            'playLink',
+            'play.url',
+            'links.play',
+            'links.playUrl',
+            'projectUrl',
+            'siteUrl',
+            'pageUrl',
+            'gameUrl',
+            'urls.play'
+        ],
+        iframe: [
+            'iframeUrl',
+            'iframeURL',
+            'iframeLink',
+            'iframe.url',
+            'iframe.src',
+            'embed',
+            'embedUrl',
+            'embedURL',
+            'embedLink',
+            'embed.src',
+            'gameIframe',
+            'iframeSrc'
+        ]
+    };
+
+    const sanitized = {};
+    const sources = {};
+    const fallbackPaths = {
+        name: ['name'],
+        type: ['type'],
+        image: ['image'],
+        url: ['url'],
+        iframe: ['iframe']
+    };
+
+    for (const [field, aliases] of Object.entries(fieldAliases)) {
+        const { value, path } = extractFieldValue(source, field, aliases, prior?.sources?.[field]);
+        const formatted = normalizeFieldValue(value, prior?.[field]);
+        sanitized[field] = formatted;
+        if (Array.isArray(path) && path.length) {
+            const joinedPath = path.join('>');
+            const fallbackJoined = fallbackPaths[field].join('>');
+            const previousPath = Array.isArray(prior?.sources?.[field]) && prior.sources[field].length
+                ? prior.sources[field]
+                : null;
+            const previousJoined = previousPath ? previousPath.join('>') : null;
+            if (previousPath && previousJoined && previousJoined !== fallbackJoined && joinedPath === fallbackJoined) {
+                sources[field] = [...previousPath];
+            } else {
+                sources[field] = [...path];
+            }
+        } else if (Array.isArray(prior?.sources?.[field]) && prior.sources[field].length) {
+            sources[field] = [...prior.sources[field]];
+        } else {
+            sources[field] = [...fallbackPaths[field]];
+        }
+    }
+
+    sanitized.name = sanitized.name || (prior?.name ?? '');
+    sanitized.type = sanitized.type || prior?.type || DEFAULT_GAME_TYPE;
+    sanitized.image = sanitized.image || (prior?.image ?? '');
+    sanitized.url = sanitized.url || (prior?.url ?? '');
+    sanitized.iframe = sanitized.iframe || prior?.iframe || DEFAULT_IFRAME_URL;
+
+    const rawTemplate = prior?.raw && typeof prior.raw === 'object' && !Array.isArray(prior.raw)
+        ? clone(prior.raw)
+        : clone(source);
+    const safeRaw = rawTemplate && typeof rawTemplate === 'object' ? rawTemplate : {};
+
+    for (const field of Object.keys(fallbackPaths)) {
+        const targetPath = sources[field] ?? fallbackPaths[field];
+        setDeep(safeRaw, targetPath, sanitized[field]);
+    }
 
     return {
-        name,
-        type: type || DEFAULT_GAME_TYPE,
-        image,
-        url,
-        iframe: iframe || DEFAULT_IFRAME_URL
+        ...sanitized,
+        raw: safeRaw,
+        sources
     };
 }
 
+function extractFieldValue(record, field, aliases, fallbackPath) {
+    if (!record || typeof record !== 'object') {
+        return { value: undefined, path: fallbackPath ?? null };
+    }
+
+    const directKey = findMatchingKey(record, field);
+    if (directKey) {
+        const value = record[directKey];
+        if (isUsableValue(value)) {
+            return { value, path: [directKey] };
+        }
+    }
+
+    for (const alias of aliases) {
+        if (!alias) {
+            continue;
+        }
+        if (alias.includes('.')) {
+            const segments = alias.split('.');
+            const { value, path } = getNestedValueWithPath(record, segments);
+            if (isUsableValue(value)) {
+                return { value, path };
+            }
+            continue;
+        }
+        const key = findMatchingKey(record, alias);
+        if (key) {
+            const value = record[key];
+            if (isUsableValue(value)) {
+                return { value, path: [key] };
+            }
+        }
+    }
+
+    if (Array.isArray(fallbackPath) && fallbackPath.length) {
+        const value = getDeep(record, fallbackPath);
+        if (isUsableValue(value)) {
+            return { value, path: fallbackPath };
+        }
+    }
+
+    return { value: undefined, path: fallbackPath ?? null };
+}
+
+function normalizeFieldValue(value, fallback) {
+    if (isUsableValue(value)) {
+        return String(value).trim();
+    }
+    if (isUsableValue(fallback)) {
+        return String(fallback).trim();
+    }
+    return '';
+}
+
+function findMatchingKey(record, key) {
+    if (!record || typeof record !== 'object') {
+        return null;
+    }
+    if (Object.prototype.hasOwnProperty.call(record, key)) {
+        return key;
+    }
+    const lower = String(key).toLowerCase();
+    return Object.keys(record).find((candidate) => candidate.toLowerCase() === lower) ?? null;
+}
+
+function getNestedValueWithPath(target, segments) {
+    let cursor = target;
+    const actualPath = [];
+    for (const segment of segments) {
+        if (!cursor || typeof cursor !== 'object') {
+            return { value: undefined, path: null };
+        }
+        const key = findMatchingKey(cursor, segment);
+        if (!key) {
+            return { value: undefined, path: null };
+        }
+        actualPath.push(key);
+        cursor = cursor[key];
+    }
+    return { value: cursor, path: actualPath };
+}
+
+function isUsableValue(value) {
+    if (value === undefined || value === null) {
+        return false;
+    }
+    const stringValue = String(value).trim();
+    return stringValue.length > 0;
+}
+
 function clone(target) {
+    if (target === undefined) {
+        return undefined;
+    }
     return JSON.parse(JSON.stringify(target));
 }
 
@@ -542,13 +670,14 @@ function handleSave(index) {
     if (!nameInput || !typeInput || !imageInput || !urlInput || !iframeInput) {
         return;
     }
+    const previous = dataState.games[index];
     const game = sanitizeGame({
         name: nameInput.value,
         type: typeInput.value,
         image: imageInput.value,
         url: urlInput.value,
         iframe: iframeInput.value
-    });
+    }, previous);
 
     try {
         validateGame(game);
@@ -845,13 +974,29 @@ function setDeep(target, path, value) {
 
 function serializeState(state, shape = payloadShape) {
     const safeShape = shape ?? createDefaultShape();
-    const games = state.games.map((game) => ({
-        name: game.name,
-        type: game.type || DEFAULT_GAME_TYPE,
-        image: game.image,
-        url: game.url,
-        iframe: game.iframe || DEFAULT_IFRAME_URL
-    }));
+    const fallbackPaths = {
+        name: ['name'],
+        type: ['type'],
+        image: ['image'],
+        url: ['url'],
+        iframe: ['iframe']
+    };
+    const games = state.games.map((game) => {
+        const record = game && typeof game === 'object' ? game : {};
+        const base = record.raw && typeof record.raw === 'object' && !Array.isArray(record.raw)
+            ? clone(record.raw)
+            : {};
+        const sources = record.sources ?? {};
+        const merged = base && typeof base === 'object' ? base : {};
+
+        setDeep(merged, Array.isArray(sources.name) && sources.name.length ? sources.name : fallbackPaths.name, record.name ?? '');
+        setDeep(merged, Array.isArray(sources.type) && sources.type.length ? sources.type : fallbackPaths.type, record.type || DEFAULT_GAME_TYPE);
+        setDeep(merged, Array.isArray(sources.image) && sources.image.length ? sources.image : fallbackPaths.image, record.image ?? '');
+        setDeep(merged, Array.isArray(sources.url) && sources.url.length ? sources.url : fallbackPaths.url, record.url ?? '');
+        setDeep(merged, Array.isArray(sources.iframe) && sources.iframe.length ? sources.iframe : fallbackPaths.iframe, record.iframe || DEFAULT_IFRAME_URL);
+
+        return merged;
+    });
 
     if (safeShape.type === 'array') {
         return games;
