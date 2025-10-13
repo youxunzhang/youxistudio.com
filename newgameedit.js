@@ -10,6 +10,7 @@
   const dialogTitle = document.getElementById('dialogTitle');
   const form = document.getElementById('gameForm');
   const cancelBtn = document.getElementById('btnCancel');
+  const DEFAULT_IFRAME = '<iframe src="https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}" width="800" height="600" scrolling="none" frameborder="0"></iframe>';
 
   let games = [];
   let editingIndex = null;
@@ -24,7 +25,7 @@
         return resp.json();
       })
       .then(data => {
-        games = Array.isArray(data) ? data.slice() : [];
+        games = Array.isArray(data) ? data.map(normalizeGame) : [];
         render();
         setStatus(`已加载 ${games.length} 条记录。`);
       })
@@ -95,6 +96,9 @@
           <a href="${escapeAttribute(game.link)}" target="_blank" rel="noopener" class="text-blue-600 hover:underline">${escapeHTML(game.link || '')}</a>
         </td>
         <td class="px-4 py-3 align-top">${escapeHTML(game.type || '')}</td>
+        <td class="px-4 py-3 align-top">
+          <div class="max-w-xs text-xs text-slate-500 break-words" title="${escapeAttribute(game.IFRAMELINK || '')}">${escapeHTML(game.IFRAMELINK || '')}</div>
+        </td>
         <td class="px-4 py-3 text-right align-top">
           <div class="inline-flex gap-2">
             <button type="button" class="px-3 py-1 text-xs rounded-lg border border-blue-200 text-blue-600 hover:bg-blue-50" data-action="edit">编辑</button>
@@ -165,10 +169,12 @@
       form.fieldImage.value = game.image || '';
       form.fieldLink.value = game.link || '';
       form.fieldType.value = game.type || 'newgame';
+      form.fieldIFRAMELINK.value = game.IFRAMELINK || DEFAULT_IFRAME;
     } else {
       dialogTitle.textContent = '新增游戏';
       form.reset();
       form.fieldType.value = 'newgame';
+      form.fieldIFRAMELINK.value = DEFAULT_IFRAME;
     }
     dialog.classList.remove('hidden');
   }
@@ -181,7 +187,7 @@
   function handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData(form);
-    const record = Object.fromEntries(formData.entries());
+    const record = normalizeGame(Object.fromEntries(formData.entries()));
     if (editingIndex !== null && editingIndex > -1) {
       games[editingIndex] = record;
       setStatus(`已更新“${record.name || '未命名'}”。`);
@@ -203,7 +209,7 @@
         if (!Array.isArray(parsed)) {
           throw new Error('JSON 格式需为数组');
         }
-        games = parsed;
+        games = parsed.map(normalizeGame);
         render();
         setStatus(`已从文件加载 ${games.length} 条记录。`);
       } catch (err) {
@@ -244,5 +250,12 @@
 
   function escapeAttribute(str) {
     return String(str || '').replace(/"/g, '&quot;');
+  }
+
+  function normalizeGame(game) {
+    return {
+      ...game,
+      IFRAMELINK: game && game.IFRAMELINK ? game.IFRAMELINK : DEFAULT_IFRAME
+    };
   }
 })();

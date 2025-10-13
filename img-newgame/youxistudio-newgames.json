@@ -3,264 +3,427 @@
     "name": "248deluxewoodenedition",
     "image": "http://youxistudio.com/img-new/248deluxewoodenedition.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "3dfootballmania",
     "image": "http://youxistudio.com/img-new/3dfootballmania.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "4inrowmania",
     "image": "http://youxistudio.com/img-new/4inrowmania.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "addictionmini",
     "image": "http://youxistudio.com/img-new/addictionmini.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "armoredassaultstrike",
     "image": "http://youxistudio.com/img-new/armoredassaultstrike.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "backyardzombiedefense",
     "image": "http://youxistudio.com/img-new/backyardzombiedefense.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "carromchallenges",
     "image": "http://youxistudio.com/img-new/carromchallenges.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "climbman",
     "image": "http://youxistudio.com/img-new/climbman.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "colorjump",
     "image": "http://youxistudio.com/img-new/colorjump.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "colorpin",
     "image": "http://youxistudio.com/img-new/colorpin.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "cookingmania",
     "image": "http://youxistudio.com/img-new/cookingmania.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "dalgonagame",
     "image": "http://youxistudio.com/img-new/dalgonagame.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "differencesfindquest",
     "image": "http://youxistudio.com/img-new/differencesfindquest.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "farming10x10",
     "image": "http://youxistudio.com/img-new/farming10x10.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "flip'nflapkitchenrace",
     "image": "http://youxistudio.com/img-new/flip'nflapkitchenrace.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "foosballcupworld",
     "image": "http://youxistudio.com/img-new/foosballcupworld.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "fruitslotmachine",
     "image": "http://youxistudio.com/img-new/fruitslotmachine.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "futoshiki",
     "image": "http://youxistudio.com/img-new/futoshiki.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "ghostproracing",
     "image": "http://youxistudio.com/img-new/ghostproracing.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "giantrush",
     "image": "http://youxistudio.com/img-new/giantrush.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "golfandfriends",
     "image": "http://youxistudio.com/img-new/golfandfriends.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "golforbit",
     "image": "http://youxistudio.com/img-new/golforbit.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "grannyhero",
     "image": "http://youxistudio.com/img-new/grannyhero.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "helikesthedarkness",
     "image": "http://youxistudio.com/img-new/helikesthedarkness.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "hexamind",
     "image": "http://youxistudio.com/img-new/hexamind.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "jewelduel",
     "image": "http://youxistudio.com/img-new/jewelduel.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "mergehaven",
     "image": "http://youxistudio.com/img-new/mergehaven.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "messontheranch",
     "image": "http://youxistudio.com/img-new/messontheranch.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "minigolfworld",
     "image": "http://youxistudio.com/img-new/minigolfworld.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "penaltyshowdown",
     "image": "http://youxistudio.com/img-new/penaltyshowdown.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "pickalock",
     "image": "http://youxistudio.com/img-new/pickalock.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "secretagent",
     "image": "http://youxistudio.com/img-new/secretagent.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "solitaire0-21",
     "image": "http://youxistudio.com/img-new/solitaire0-21.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "sortworks",
     "image": "http://youxistudio.com/img-new/sortworks.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "subwayjumper",
     "image": "http://youxistudio.com/img-new/subwayjumper.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "survivorlegends",
     "image": "http://youxistudio.com/img-new/survivorlegends.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "thiefpuzzle",
     "image": "http://youxistudio.com/img-new/thiefpuzzle.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "tinyfootballcup",
     "image": "http://youxistudio.com/img-new/tinyfootballcup.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "tractormania",
     "image": "http://youxistudio.com/img-new/tractormania.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "trainminer",
     "image": "http://youxistudio.com/img-new/trainminer.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "westernsniper",
     "image": "http://youxistudio.com/img-new/westernsniper.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "wordler",
     "image": "http://youxistudio.com/img-new/wordler.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "wordschallenge",
     "image": "http://youxistudio.com/img-new/wordschallenge.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   },
   {
     "name": "zombiegun",
     "image": "http://youxistudio.com/img-new/zombiegun.jpg",
     "link": "http://youxistudio.com",
-    "type": "newgame"
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
+  },
+  {
+    "name": "slither",
+    "image": "http://youxistudio.com/img-new/slither.jpg",
+    "link": "http://slither.com/io",
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
+  },
+  {
+    "name": "snake",
+    "image": "http://youxistudio.com/img-new/snake.jpg",
+    "link": "https://snake.io/",
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
+  },
+  {
+    "name": "Tetris",
+    "image": "http://youxistudio.com/img-new/tetris.jpg",
+    "link": "https://play.tetris.com/",
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
+  },
+  {
+    "name": "Tetris",
+    "image": "http://youxistudio.com/img-new/tetris.jpg",
+    "link": "https://www.goodoldtetris.com/",
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
+  },
+  {
+    "name": "2048",
+    "image": "http://youxistudio.com/img-new/2048.jpg",
+    "link": "https://2048game.com/2048",
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
+  },
+  {
+    "name": "spinthewheel",
+    "image": "http://youxistudio.com/img-new/spinthewheel.jpg",
+    "link": "https://spinthewheelofnames.com/",
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
+  },
+  {
+    "name": "SuperMario",
+    "image": "http://youxistudio.com/img-new/supermario.jpg",
+    "link": "https://supermarioplay.com/",
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
+  },
+  {
+    "name": "Minesweeper",
+    "image": "http://youxistudio.com/img-new/minesweeper.jpg",
+    "link": "https://minesweeper.online/",
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
+  },
+  {
+    "name": "Onet Connect",
+    "image": "http://youxistudio.com/img-new/onetconnect.jpg",
+    "link": "https://www.crazygames.com/game/onet-connect-classic",
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
+  },
+  {
+    "name": "Match Pairs",
+    "image": "http://youxistudio.com/img-new/matchpairs.jpg",
+    "link": "https://dkmgames.com/memory/pairsrun.php",
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
+  },
+  {
+    "name": "udoku",
+    "image": "http://youxistudio.com/img-new/udoku.jpg",
+    "link": "https://www.websudoku.com/",
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
+  },
+  {
+    "name": "Bejeweled",
+    "image": "http://youxistudio.com/img-new/bejeweled.jpg",
+    "link": "https://www.digbejeweled.com/",
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
+  },
+  {
+    "name": "happy wheels",
+    "image": "http://youxistudio.com/img-new/happywheels.jpg",
+    "link": "https://www.crazygames.com/game/happy-wheels",
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
+  },
+  {
+    "name": "Flappy Bird",
+    "image": "http://youxistudio.com/img-new/flappybird.jpg",
+    "link": "https://flappybird.org/",
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
+  },
+  {
+    "name": "run 3",
+    "image": "http://youxistudio.com/img-new/run3.jpg",
+    "link": "https://www.crazygames.com/game/run-3",
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
+  },
+  {
+    "name": "agar",
+    "image": "http://youxistudio.com/img-new/agar.jpg",
+    "link": "https://agaronline.io/",
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
+  },
+  {
+    "name": "FireboyandWatergirl",
+    "image": "http://youxistudio.com/img-new/fireboyandwatergirl.jpg",
+    "link": "https://www.crazygames.com/game/fireboy-and-watergirl-the-forest-temple",
+    "type": "newgame",
+    "IFRAMELINK": "<iframe src=\"https://html5.gamedistribution.com/97496af9505c4ab199ba19790626df53/?gd_sdk_referrer_url=https://www.example.com/games/{game-path}\" width=\"800\" height=\"600\" scrolling=\"none\" frameborder=\"0\"></iframe>"
   }
 ]
