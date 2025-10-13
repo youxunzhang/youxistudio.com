@@ -52,6 +52,7 @@
               <th class="px-4 py-3 text-left">封面地址</th>
               <th class="px-4 py-3 text-left">跳转链接</th>
               <th class="px-4 py-3 text-left">类型</th>
+              <th class="px-4 py-3 text-left">IFRAME 链接</th>
               <th class="px-4 py-3 text-right">操作</th>
             </tr>
           </thead>
@@ -82,6 +83,11 @@
         <div>
           <label for="fieldType" class="block text-sm font-medium text-slate-600 mb-1">类型</label>
           <input id="fieldType" name="type" type="text" required class="w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-200" value="newgame" />
+        </div>
+        <div>
+          <label for="fieldIFRAMELINK" class="block text-sm font-medium text-slate-600 mb-1">IFRAME 嵌入代码</label>
+          <textarea id="fieldIFRAMELINK" name="IFRAMELINK" rows="4" required class="w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-200 text-xs"></textarea>
+          <p class="mt-1 text-xs text-slate-400">使用默认模板可将 <code>{game-path}</code> 替换为具体的游戏路径。</p>
         </div>
         <div class="flex justify-end gap-3 pt-4">
           <button type="button" id="btnCancel" class="px-4 py-2 rounded-xl border bg-white hover:bg-slate-50">取消</button>
