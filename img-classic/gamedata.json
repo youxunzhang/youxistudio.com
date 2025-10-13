@@ -1,0 +1,87 @@
+[
+  {
+    "name": "slither",
+    "image": "https://youxistudio.com/img-classic/slither.jpg",
+    "link": "http://slither.com/io"
+  },
+  {
+    "name": "snake",
+    "image": "https://youxistudio.com/img-classic/snake.jpg",
+    "link": "https://snake.io/"
+  },
+  {
+    "name": "Tetris",
+    "image": "https://youxistudio.com/img-classic/Tetris.jpg",
+    "link": "https://play.tetris.com/"
+  },
+  {
+    "name": "Tetris",
+    "image": "https://youxistudio.com/img-classic/Tetris.jpg",
+    "link": "https://www.goodoldtetris.com/"
+  },
+  {
+    "name": "2048",
+    "image": "https://youxistudio.com/img-classic/2048.jpg",
+    "link": "https://2048game.com/2048"
+  },
+  {
+    "name": "spinthewheel",
+    "image": "https://youxistudio.com/img-classic/spinthewheel.jpg",
+    "link": "https://spinthewheelofnames.com/"
+  },
+  {
+    "name": "SuperMario",
+    "image": "https://youxistudio.com/img-classic/SuperMario.jpg",
+    "link": "https://supermarioplay.com/"
+  },
+  {
+    "name": "Minesweeper",
+    "image": "https://youxistudio.com/img-classic/Minesweeper.jpg",
+    "link": "https://minesweeper.online/"
+  },
+  {
+    "name": "Onet Connect",
+    "image": "https://youxistudio.com/img-classic/Onet%20Connect.jpg",
+    "link": "https://www.crazygames.com/game/onet-connect-classic"
+  },
+  {
+    "name": "Match Pairs",
+    "image": "https://youxistudio.com/img-classic/Match%20Pairs.jpg",
+    "link": "https://dkmgames.com/memory/pairsrun.php"
+  },
+  {
+    "name": "udoku",
+    "image": "https://youxistudio.com/img-classic/udoku.jpg",
+    "link": "https://www.websudoku.com/"
+  },
+  {
+    "name": "Bejeweled",
+    "image": "https://youxistudio.com/img-classic/Bejeweled.jpg",
+    "link": "https://www.digbejeweled.com/"
+  },
+  {
+    "name": "happywheels",
+    "image": "https://youxistudio.com/img-classic/happywheels.jpg",
+    "link": "https://www.crazygames.com/game/happy-wheels"
+  },
+  {
+    "name": "FlappyBird",
+    "image": "https://youxistudio.com/img-classic/FlappyBird.jpg",
+    "link": "https://flappybird.org/"
+  },
+  {
+    "name": "Run 3",
+    "image": "https://youxistudio.com/img-classic/Run%203.jpg",
+    "link": "https://www.crazygames.com/game/run-3"
+  },
+  {
+    "name": "agar",
+    "image": "https://youxistudio.com/img-classic/agar.jpg",
+    "link": "https://agaronline.io/"
+  },
+  {
+    "name": "FireboyandWatergirl",
+    "image": "https://youxistudio.com/img-classic/FireboyandWatergirl.jpg",
+    "link": "https://www.crazygames.com/game/fireboy-and-watergirl-the-forest-temple"
+  }
+]
