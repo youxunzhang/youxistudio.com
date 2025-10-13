@@ -82,7 +82,7 @@
 
     async function loadGames() {
         try {
-            const response = await fetch(DATA_SOURCE, { cache: 'no-store' });
+            const response = await fetch(`${DATA_SOURCE}?v=${Date.now()}`, { cache: 'no-store' });
             if (!response.ok) {
                 throw new Error(`请求失败：${response.status}`);
             }
