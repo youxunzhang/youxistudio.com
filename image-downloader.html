@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏图片批量下载器 | Shadowmilk Scratch</title>
+    <meta name="description" content="将包含 .allgames 结构的网页代码粘贴到工具中，快速解析游戏图片并按游戏名称批量下载。">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="logo" href="index.html">Shadowmilk Scratch</a>
+            <nav class="site-nav" aria-label="主要导航">
+                <a href="index.html#categories">游戏分类</a>
+                <a href="index.html#portal">精选平台</a>
+                <a href="index.html#promotion">游戏推广</a>
+                <a href="index.html#section-action">动作游戏</a>
+                <a href="index.html#section-adventure">冒险游戏</a>
+                <a href="index.html#section-multiplayer">多人联机</a>
+                <a href="index.html#section-hypercasual">超休闲</a>
+                <a href="index.html#section-soccer">足球与体育</a>
+                <a href="index.html#section-stickman">火柴人游戏</a>
+                <a href="latest-games.html">最新游戏</a>
+                <a href="newgame.html">新游速递</a>
+                <a href="game-sites.html">游戏站榜单</a>
+                <a href="game-navigation.html">软件导航</a>
+                <a href="sprunki.html">Sprunki 专区</a>
+                <a href="image-downloader.html" aria-current="page">图片下载器</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page" id="image-downloader">
+        <div class="container">
+            <section class="download-hero" aria-labelledby="download-hero-title">
+                <p class="eyebrow">GAME ARTWORK COLLECTOR</p>
+                <h1 id="download-hero-title">解析 .allgames 代码并批量下载封面图</h1>
+                <p>
+                    将包含 <code>.allgames</code> 列表的网页代码粘贴到下方输入框，我们会自动提取每个游戏的图片地址与名称，
+                    并在下载时使用游戏名称作为文件名。
+                </p>
+                <ul class="download-hero__tips">
+                    <li>✔ 支持粘贴完整网页或仅包含 <code>.allgames</code> 容器的代码片段</li>
+                    <li>✔ 自动识别图片地址与游戏名称，下载时自动清理非法字符</li>
+                    <li>✔ 支持逐个下载或一键下载全部图片</li>
+                </ul>
+            </section>
+
+            <section class="download-controls" aria-labelledby="download-controls-title">
+                <div class="controls-header">
+                    <div>
+                        <h2 id="download-controls-title">粘贴代码并开始解析</h2>
+                        <p class="controls-subtitle">默认示例为 2048 &amp; 数学分类页面，点击解析即可查看效果。</p>
+                    </div>
+                    <div class="controls-actions">
+                        <button type="button" id="fillSampleButton" class="secondary-button">填充示例代码</button>
+                        <button type="button" id="parseButton" class="primary-button">解析代码</button>
+                    </div>
+                </div>
+                <label for="htmlInput" class="sr-only">待解析的 HTML 代码</label>
+                <textarea id="htmlInput" class="download-input" rows="12" placeholder="在此粘贴包含 .allgames 结构的 HTML 代码..."></textarea>
+                <p id="statusMessage" class="download-status" aria-live="polite">尚未解析。</p>
+            </section>
+
+            <section class="download-results" aria-labelledby="download-results-title" aria-live="polite">
+                <div class="results-header">
+                    <h2 id="download-results-title">解析结果</h2>
+                    <p id="resultsSummary" class="results-summary">暂无数据，请先解析代码。</p>
+                    <button type="button" id="downloadAllButton" class="primary-button" disabled>下载全部</button>
+                </div>
+                <div id="resultsContainer" class="download-grid"></div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>Shadowmilk Scratch Arcade · 一起守护 Scratch 的创意与乐趣</p>
+            <div class="footer-links">
+                <a href="https://scratch.mit.edu/parents" target="_blank" rel="noopener">家长指引</a>
+                <a href="https://scratch.mit.edu/community_guidelines" target="_blank" rel="noopener">社区守则</a>
+                <a href="mailto:hello@shadowmilk.org">联系站长</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="image-downloader.js"></script>
+</body>
+</html>
