@@ -3,6 +3,7 @@
     --surface: #ffffff;
     --surface-strong: #f8fafc;
     --border: #e2e8f0;
+    --border-strong: #cbd5f0;
     --brand: #2563eb;
     --brand-soft: rgba(37, 99, 235, 0.12);
     --brand-strong: rgba(37, 99, 235, 0.22);
@@ -1942,5 +1943,193 @@ a.game-card:focus-visible {
 
     .promotion-card {
         min-height: auto;
+    }
+}
+
+/* 图片下载器页面 */
+#image-downloader .download-hero {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem;
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.download-hero__tips {
+    margin: 0;
+    padding-left: 1.25rem;
+    color: var(--text-secondary);
+    display: grid;
+    gap: 0.5rem;
+}
+
+.download-controls {
+    margin-top: 2.5rem;
+    background: var(--surface-strong);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.controls-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.controls-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.download-input {
+    width: 100%;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    padding: 1rem 1.1rem;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background: var(--surface);
+    resize: vertical;
+    min-height: 220px;
+}
+
+.download-input:focus {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+    border-color: var(--brand);
+}
+
+.download-status {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+.download-results {
+    margin-top: 2.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.download-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.download-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface-strong);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+}
+
+.download-card__image {
+    background: #000;
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.download-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.download-card__body {
+    padding: 1.1rem 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.download-card__body h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    line-height: 1.35;
+}
+
+.download-card__url {
+    margin: 0;
+    word-break: break-all;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.secondary-button {
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-strong);
+    padding: 0.6rem 1.2rem;
+    background: var(--surface);
+    color: var(--text-primary);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.secondary-button:hover,
+.secondary-button:focus-visible {
+    background: var(--surface-strong);
+    border-color: var(--brand);
+}
+
+.secondary-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+@media (max-width: 768px) {
+    #image-downloader .download-hero,
+    .download-controls,
+    .download-results {
+        padding: 1.6rem;
+    }
+
+    .download-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .controls-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .controls-actions {
+        justify-content: flex-start;
     }
 }
