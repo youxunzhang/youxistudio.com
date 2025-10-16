@@ -12,15 +12,6 @@
         <div class="container header-inner">
             <a class="logo" href="index.html">Shadowmilk Scratch</a>
             <nav class="site-nav" aria-label="主要导航">
-                <a href="index.html#categories">游戏分类</a>
-                <a href="index.html#portal">精选平台</a>
-                <a href="index.html#promotion">游戏推广</a>
-                <a href="index.html#section-action">动作游戏</a>
-                <a href="index.html#section-adventure">冒险游戏</a>
-                <a href="index.html#section-multiplayer">多人联机</a>
-                <a href="index.html#section-hypercasual">超休闲</a>
-                <a href="index.html#section-soccer">足球与体育</a>
-                <a href="index.html#section-stickman">火柴人游戏</a>
                 <a href="latest-games.html">最新游戏</a>
                 <a href="newgame.html">新游速递</a>
                 <a href="game-sites.html">游戏站榜单</a>
@@ -70,6 +61,28 @@
                     <button type="button" id="downloadAllButton" class="primary-button" disabled>下载全部</button>
                 </div>
                 <div id="resultsContainer" class="download-grid"></div>
+            </section>
+
+            <section class="download-report" aria-labelledby="download-report-title">
+                <div class="report-header">
+                    <h2 id="download-report-title">Report</h2>
+                    <button type="button" id="copyReportButton" class="secondary-button" disabled>复制报告</button>
+                </div>
+                <div class="report-table-wrapper">
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">游戏名称</th>
+                                <th scope="col">图片名称</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportTableBody">
+                            <tr class="report-empty">
+                                <td colspan="2">暂无解析数据，请先粘贴代码并点击解析。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </section>
         </div>
     </main>
