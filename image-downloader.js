@@ -6,6 +6,8 @@
     const resultsSummary = document.getElementById('resultsSummary');
     const statusMessage = document.getElementById('statusMessage');
     const downloadAllButton = document.getElementById('downloadAllButton');
+    const reportTableBody = document.getElementById('reportTableBody');
+    const copyReportButton = document.getElementById('copyReportButton');
 
     const sampleHtml = `
 <div class="allgames"> 
@@ -85,6 +87,49 @@
 
     let parsedGames = [];
 
+    const fallbackCopyText = (text) => {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'absolute';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        const selection = document.getSelection();
+        const selectedRange = selection?.rangeCount > 0 ? selection.getRangeAt(0) : null;
+        textarea.select();
+        const succeeded = document.execCommand('copy');
+        document.body.removeChild(textarea);
+        if (selectedRange) {
+            selection?.removeAllRanges();
+            selection?.addRange(selectedRange);
+        }
+        if (!succeeded) {
+            throw new Error('document.execCommand("copy") 返回 false');
+        }
+    };
+
+    const copyText = async (text, label) => {
+        if (!text) return;
+        try {
+            if (navigator.clipboard?.writeText) {
+                await navigator.clipboard.writeText(text);
+            } else {
+                fallbackCopyText(text);
+            }
+            const isMultiLine = text.includes('\n');
+            if (isMultiLine) {
+                const total = text.split('\n').filter((line) => line.trim().length > 0).length;
+                statusMessage.textContent = `${label} 已复制（共 ${total || 1} 条）`;
+            } else {
+                const preview = text.length > 40 ? `${text.slice(0, 37)}…` : text;
+                statusMessage.textContent = `${label} 已复制：${preview}`;
+            }
+        } catch (error) {
+            console.error('复制失败', error);
+            statusMessage.textContent = `${label} 复制失败，请手动复制。`;
+        }
+    };
+
     const sanitizeFileName = (name) => {
         return name
             .replace(/[\\/:*?"<>|]/g, '_')
@@ -124,11 +169,37 @@
             </div>
             <div class="download-card__body">
                 <h3>${game.name}</h3>
-                <p class="download-card__url">${game.imageUrl}</p>
-                <button type="button" class="primary-button download-single" data-index="${index}">下载图片</button>
+                <div class="download-card__actions">
+                    <button type="button" class="primary-button download-single" data-index="${index}">下载图片</button>
+                </div>
             </div>
         `;
         return card;
+    };
+
+    const renderReport = (games) => {
+        reportTableBody.innerHTML = '';
+
+        if (!games.length) {
+            const emptyRow = document.createElement('tr');
+            emptyRow.className = 'report-empty';
+            emptyRow.innerHTML = '<td colspan="2">暂无解析数据，请先粘贴代码并点击解析。</td>';
+            reportTableBody.appendChild(emptyRow);
+            copyReportButton.disabled = true;
+            return;
+        }
+
+        const fragment = document.createDocumentFragment();
+        games.forEach((game) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="report-name">${game.name}</td>
+                <td class="report-file">${game.fileName}</td>
+            `;
+            fragment.appendChild(row);
+        });
+        reportTableBody.appendChild(fragment);
+        copyReportButton.disabled = false;
     };
 
     const renderGames = (games) => {
@@ -136,6 +207,7 @@
         if (!games.length) {
             resultsSummary.textContent = '暂无数据，请先解析代码。';
             downloadAllButton.disabled = true;
+            renderReport([]);
             return;
         }
 
@@ -147,6 +219,8 @@
 
         resultsSummary.textContent = `共解析到 ${games.length} 款游戏，支持逐个或批量下载封面图。`;
         downloadAllButton.disabled = false;
+        downloadAllButton.textContent = '下载全部';
+        renderReport(games);
     };
 
     const parseHtml = () => {
@@ -176,10 +250,16 @@
 
             const imgElement = node.querySelector('img');
             const imageUrl = imgElement?.getAttribute('src') || imgElement?.getAttribute('data-src') || '';
+            const extension = getExtensionFromUrl(imageUrl);
+            const sanitizedBaseName = sanitizeFileName(name || `游戏 ${index + 1}`);
+            const fileName = extension ? `${sanitizedBaseName}.${extension}` : sanitizedBaseName;
 
             return {
                 name: name || `游戏 ${index + 1}`,
-                imageUrl
+                imageUrl,
+                fileName,
+                sanitizedBaseName,
+                extension,
             };
         }).filter(game => Boolean(game.imageUrl));
 
@@ -217,12 +297,16 @@
             }
 
             const blob = await response.blob();
-            const extension = getExtensionFromType(blob.type) || getExtensionFromUrl(game.imageUrl);
-            const filename = `${sanitizeFileName(game.name)}.${extension}`;
+            const sanitizedBaseName = game.sanitizedBaseName || sanitizeFileName(game.name);
+            const extensionFromType = getExtensionFromType(blob.type);
+            const fallbackExtension = game.extension || getExtensionFromUrl(game.imageUrl);
+            const effectiveExtension = extensionFromType || fallbackExtension;
+            const filename = effectiveExtension ? `${sanitizedBaseName}.${effectiveExtension}` : sanitizedBaseName;
 
             triggerDownload(blob, filename);
 
-            targetButton.textContent = '下载完成';
+            targetButton.disabled = false;
+            targetButton.textContent = '重新下载';
             statusMessage.textContent = `${game.name} 下载完成。`;
         } catch (error) {
             console.error('下载失败', error);
@@ -247,7 +331,8 @@
             }
         }
 
-        downloadAllButton.textContent = '批量下载完成';
+        downloadAllButton.textContent = '重新批量下载';
+        downloadAllButton.disabled = false;
         statusMessage.textContent = '所有图片已尝试下载完成。';
     };
 
@@ -256,17 +341,31 @@
 
     resultsContainer.addEventListener('click', (event) => {
         const target = event.target;
-        if (target instanceof HTMLButtonElement && target.classList.contains('download-single')) {
+        if (!(target instanceof HTMLButtonElement)) {
+            return;
+        }
+
+        if (target.classList.contains('download-single')) {
             const index = Number.parseInt(target.dataset.index ?? '-1', 10);
             const game = parsedGames[index];
             if (game) {
                 downloadImage(game, target);
             }
+            return;
         }
+
     });
 
     fillSampleButton.addEventListener('click', () => {
         htmlInput.value = sampleHtml.trim();
         htmlInput.focus();
+    });
+
+    copyReportButton.addEventListener('click', () => {
+        if (!parsedGames.length) return;
+        const reportText = parsedGames
+            .map((game) => `${game.name} - ${game.fileName}`)
+            .join('\n');
+        copyText(reportText, 'Report');
     });
 })();
