@@ -85,13 +85,25 @@
 
     let parsedGames = [];
 
-    const sanitizeFileName = (name) => {
-        return name
+    const sanitizeFileName = (name, fallback = 'file') => {
+        const sanitized = (name ?? '')
             .replace(/[\\/:*?"<>|]/g, '_')
             .replace(/\s+/g, ' ')
             .trim()
             .replace(/\s/g, '-');
+
+        if (!sanitized) {
+            return fallback;
+        }
+
+        return sanitized
+            .replace(/-+/g, '-')
+            .replace(/^-/, '')
+            .replace(/-$/, '')
+            || fallback;
     };
+
+    const sanitizeDisplayName = (name, fallback) => sanitizeFileName(name, fallback);
 
     const getExtensionFromType = (type) => {
         if (!type) return '';
@@ -168,7 +180,7 @@
         }
 
         parsedGames = nodes.map((node, index) => {
-            const name = (node.querySelector('.GameName')?.textContent ||
+            const rawName = (node.querySelector('.GameName')?.textContent ||
                 node.querySelector('a')?.getAttribute('aria-label') ||
                 node.querySelector('img')?.getAttribute('alt') ||
                 `游戏 ${index + 1}`
@@ -177,8 +189,11 @@
             const imgElement = node.querySelector('img');
             const imageUrl = imgElement?.getAttribute('src') || imgElement?.getAttribute('data-src') || '';
 
+            const sanitizedName = sanitizeDisplayName(rawName, `游戏-${index + 1}`);
+
             return {
-                name: name || `游戏 ${index + 1}`,
+                name: sanitizedName,
+                rawName,
                 imageUrl
             };
         }).filter(game => Boolean(game.imageUrl));
