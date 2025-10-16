@@ -71,6 +71,31 @@
                 </div>
                 <div id="resultsContainer" class="download-grid"></div>
             </section>
+
+            <section class="download-metadata" aria-labelledby="download-metadata-title">
+                <div class="metadata-header">
+                    <h2 id="download-metadata-title">解析结果汇总</h2>
+                    <p class="metadata-subtitle">下方区域会列出所有解析到的游戏名与对应的图片文件名，方便复制或校对。</p>
+                </div>
+                <div class="metadata-grid">
+                    <div class="metadata-column">
+                        <div class="metadata-column__header">
+                            <h3>游戏名</h3>
+                            <button type="button" id="copyNamesButton" class="secondary-button" disabled>复制全部</button>
+                        </div>
+                        <label for="namesOutput" class="sr-only">游戏名列表</label>
+                        <textarea id="namesOutput" class="metadata-textarea" rows="10" readonly placeholder="解析后自动填充游戏名"></textarea>
+                    </div>
+                    <div class="metadata-column">
+                        <div class="metadata-column__header">
+                            <h3>图片文件名</h3>
+                            <button type="button" id="copyFilesButton" class="secondary-button" disabled>复制全部</button>
+                        </div>
+                        <label for="filesOutput" class="sr-only">图片文件名列表</label>
+                        <textarea id="filesOutput" class="metadata-textarea" rows="10" readonly placeholder="解析后自动填充文件名"></textarea>
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
 
