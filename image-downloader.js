@@ -6,10 +6,8 @@
     const resultsSummary = document.getElementById('resultsSummary');
     const statusMessage = document.getElementById('statusMessage');
     const downloadAllButton = document.getElementById('downloadAllButton');
-    const namesOutput = document.getElementById('namesOutput');
-    const filesOutput = document.getElementById('filesOutput');
-    const copyNamesButton = document.getElementById('copyNamesButton');
-    const copyFilesButton = document.getElementById('copyFilesButton');
+    const reportTableBody = document.getElementById('reportTableBody');
+    const copyReportButton = document.getElementById('copyReportButton');
 
     const sampleHtml = `
 <div class="allgames"> 
@@ -172,14 +170,37 @@
             <div class="download-card__body">
                 <h3>${game.name}</h3>
                 <p class="download-card__filename">文件名：${game.fileName}</p>
-                <p class="download-card__url">${game.imageUrl}</p>
                 <div class="download-card__actions">
                     <button type="button" class="primary-button download-single" data-index="${index}">下载图片</button>
-                    <button type="button" class="secondary-button copy-url" data-index="${index}" aria-label="复制图片链接">复制链接</button>
                 </div>
             </div>
         `;
         return card;
+    };
+
+    const renderReport = (games) => {
+        reportTableBody.innerHTML = '';
+
+        if (!games.length) {
+            const emptyRow = document.createElement('tr');
+            emptyRow.className = 'report-empty';
+            emptyRow.innerHTML = '<td colspan="2">暂无解析数据，请先粘贴代码并点击解析。</td>';
+            reportTableBody.appendChild(emptyRow);
+            copyReportButton.disabled = true;
+            return;
+        }
+
+        const fragment = document.createDocumentFragment();
+        games.forEach((game) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="report-name">${game.name}</td>
+                <td class="report-file">${game.fileName}</td>
+            `;
+            fragment.appendChild(row);
+        });
+        reportTableBody.appendChild(fragment);
+        copyReportButton.disabled = false;
     };
 
     const renderGames = (games) => {
@@ -187,10 +208,7 @@
         if (!games.length) {
             resultsSummary.textContent = '暂无数据，请先解析代码。';
             downloadAllButton.disabled = true;
-            namesOutput.value = '';
-            filesOutput.value = '';
-            copyNamesButton.disabled = true;
-            copyFilesButton.disabled = true;
+            renderReport([]);
             return;
         }
 
@@ -203,11 +221,7 @@
         resultsSummary.textContent = `共解析到 ${games.length} 款游戏，支持逐个或批量下载封面图。`;
         downloadAllButton.disabled = false;
         downloadAllButton.textContent = '下载全部';
-
-        namesOutput.value = games.map((game) => game.name).join('\n');
-        filesOutput.value = games.map((game) => game.fileName).join('\n');
-        copyNamesButton.disabled = !namesOutput.value;
-        copyFilesButton.disabled = !filesOutput.value;
+        renderReport(games);
     };
 
     const parseHtml = () => {
@@ -341,13 +355,6 @@
             return;
         }
 
-        if (target.classList.contains('copy-url')) {
-            const index = Number.parseInt(target.dataset.index ?? '-1', 10);
-            const game = parsedGames[index];
-            if (game) {
-                copyText(game.imageUrl, '图片链接');
-            }
-        }
     });
 
     fillSampleButton.addEventListener('click', () => {
@@ -355,13 +362,11 @@
         htmlInput.focus();
     });
 
-    copyNamesButton.addEventListener('click', () => {
-        if (!namesOutput.value) return;
-        copyText(namesOutput.value, '全部游戏名');
-    });
-
-    copyFilesButton.addEventListener('click', () => {
-        if (!filesOutput.value) return;
-        copyText(filesOutput.value, '全部图片文件名');
+    copyReportButton.addEventListener('click', () => {
+        if (!parsedGames.length) return;
+        const reportText = parsedGames
+            .map((game) => `${game.name} - ${game.fileName}`)
+            .join('\n');
+        copyText(reportText, '报告内容');
     });
 })();
