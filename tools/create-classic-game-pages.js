@@ -46,7 +46,7 @@ for (const game of data.games) {
 <body>
   <header class="site-header">
     <div class="container header-inner">
-      <a class="logo" href="/index.html">Shadowmilk Scratch</a>
+      <a class="logo" href="/index.html">游戏导航</a>
       <nav class="site-nav" aria-label="主要导航">
         <a href="/index.html">首页</a>
         <a href="/latest-games.html">最新游戏</a>
