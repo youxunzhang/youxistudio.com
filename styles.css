@@ -2071,11 +2071,17 @@ a.game-card:focus-visible {
     line-height: 1.35;
 }
 
-.download-card__url {
+.download-card__filename {
     margin: 0;
-    word-break: break-all;
+    font-size: 0.9rem;
     color: var(--text-secondary);
-    font-size: 0.85rem;
+    word-break: break-all;
+}
+
+.download-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .secondary-button {
@@ -2100,6 +2106,87 @@ a.game-card:focus-visible {
     cursor: not-allowed;
 }
 
+.download-report {
+    margin-top: 2.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.report-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.report-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+}
+
+.report-table-wrapper {
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-strong);
+    background: #fff;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.report-table thead {
+    background: var(--surface-strong);
+}
+
+.report-table th,
+.report-table td {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.report-table th {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.report-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.report-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.report-file {
+    font-family: "Fira Code", "JetBrains Mono", Consolas, "Courier New", monospace;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    word-break: break-all;
+}
+
+.report-empty td {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 2.25rem 1rem;
+}
+
 .sr-only {
     position: absolute;
     width: 1px;
@@ -2114,7 +2201,8 @@ a.game-card:focus-visible {
 @media (max-width: 768px) {
     #image-downloader .download-hero,
     .download-controls,
-    .download-results {
+    .download-results,
+    .download-report {
         padding: 1.6rem;
     }
 
@@ -2124,6 +2212,15 @@ a.game-card:focus-visible {
 }
 
 @media (max-width: 560px) {
+    .download-report {
+        padding: 1.25rem;
+    }
+
+    .report-table th,
+    .report-table td {
+        padding: 0.75rem 0.85rem;
+    }
+
     .controls-header {
         flex-direction: column;
         align-items: stretch;
