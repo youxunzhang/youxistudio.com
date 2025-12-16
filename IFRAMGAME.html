@@ -5,16 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8794607118520437"
      crossorigin="anonymous"></script>
-    <title>Games - game studio</title>
+    <title>IFRAMGAME - IFRAME Game Collection</title>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #333;
             min-height: 100vh;
-            margin: 0;
         }
-        
         .navbar {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -25,7 +24,6 @@
             z-index: 1000;
             box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
         }
-
         .nav-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -34,7 +32,6 @@
             align-items: center;
             padding: 0 2rem;
         }
-
         .logo {
             position: relative;
             display: inline-flex;
@@ -106,24 +103,20 @@
                 background-position: 0% 50%;
             }
         }
-
         .nav-links {
             display: flex;
             gap: 2rem;
             list-style: none;
         }
-
         .nav-links a {
             text-decoration: none;
             color: #333;
             font-weight: 500;
             transition: color 0.3s;
         }
-
         .nav-links a:hover {
             color: #667eea;
         }
-
         .search-box {
             display: flex;
             align-items: center;
@@ -133,11 +126,7 @@
             border: 2px solid transparent;
             transition: border-color 0.3s;
         }
-
-        .search-box:focus-within {
-            border-color: #667eea;
-        }
-
+        .search-box:focus-within { border-color: #667eea; }
         .search-box input {
             border: none;
             background: none;
@@ -145,27 +134,8 @@
             padding: 0.5rem;
             width: 200px;
         }
-
-        .mobile-menu {
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .mobile-menu {
-                display: block;
-                background: none;
-                border: none;
-                font-size: 1.5rem;
-                color: #333;
-            }
-        }
-        
         .content {
-            max-width: 1100px;
+            max-width: 900px;
             margin: 100px auto 0;
             padding: 2rem;
         }
@@ -184,55 +154,48 @@
             align-items: center;
             gap: 1rem;
         }
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 1.5rem;
-        }
-        .game-card {
-            background: #f8f9fa;
-            border-radius: 15px;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            padding: 1.5rem 1rem;
+        .platform-list {
             display: flex;
             flex-direction: column;
+            gap: 1.5rem;
+        }
+        .platform-item {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
             align-items: center;
+            gap: 1.5rem;
         }
-        .game-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.13);
-        }
-        .game-title {
-            font-weight: bold;
-            margin-bottom: 0.5rem;
+        .platform-item a {
+            font-size: 1.2rem;
             color: #667eea;
-            font-size: 1.1rem;
-        }
-        .game-link {
-            color: #764ba2;
+            font-weight: bold;
             text-decoration: none;
-            font-size: 1rem;
-            word-break: break-all;
-            margin-bottom: 0.5rem;
-            display: none;
+            transition: color 0.3s;
         }
-        .game-link:hover {
-            text-decoration: underline;
-            color: #333;
+        .platform-item a:hover {
+            color: #764ba2;
         }
-        .game-iframe {
-            width: 320px;
-            height: 180px;
-            border: none;
-            border-radius: 10px;
-            margin-top: 0.5rem;
-            background: #e0e0e0;
+        .footer {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
         }
-        @media (max-width: 800px) {
-            .game-iframe { width: 100%; height: 180px; }
+        .mobile-menu { display: none; }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-menu {
+                display: block;
+                background: none;
+                border: none;
+                font-size: 1.5rem;
+                color: #333;
+            }
+            .content { padding: 1rem; }
         }
     </style>
 </head>
@@ -250,7 +213,7 @@
                 <li><a href="#new">New</a></li>
                 <li><a href="#popular">Popular</a></li>
                 <li><a href="Browser.html">Browser Game</a></li>
-                <li><a href="company-ranking.html">Company Ranking</a></li>
+                <li><a href="IFRAMGAME.html">IFRAMGAME</a></li>
             </ul>
             <div class="search-box">
                 <input type="text" placeholder="Search games..." id="searchInput">
@@ -261,57 +224,41 @@
     </nav>
     <div class="content">
         <section class="section">
-            <h2 class="section-title">🎮 Games</h2>
-            <div class="games-grid">
-                <div class="game-card">
-                    <div class="game-title">Wacky Flip</div>
-                    <a class="game-link" href="https://html5.gamedistribution.com/e1e32230bdf040d69f4e367015e1c527/" target="_blank">https://html5.gamedistribution.com/e1e32230bdf040d69f4e367015e1c527/</a>
-                    <iframe class="game-iframe" src="https://html5.gamedistribution.com/e1e32230bdf040d69f4e367015e1c527/" allowfullscreen></iframe>
+            <h2 class="section-title">🌐 IFRAME Platform Directory</h2>
+            <div class="platform-list">
+                <div class="platform-item">
+                    <span>CrazyGames – New Releases:</span>
+                    <a href="https://www.crazygames.com/new" target="_blank">https://www.crazygames.com/new</a>
                 </div>
-                <div class="game-card">
-                    <div class="game-title">Tower Crash 3D</div>
-                    <a class="game-link" href="https://html5.gamedistribution.com/b375b05ea29b40abaaf3606a2ff215ad/" target="_blank">https://html5.gamedistribution.com/b375b05ea29b40abaaf3606a2ff215ad/</a>
-                    <iframe class="game-iframe" src="https://html5.gamedistribution.com/b375b05ea29b40abaaf3606a2ff215ad/" allowfullscreen></iframe>
+                <div class="platform-item">
+                    <span>GameDistribution – Game Library:</span>
+                    <a href="https://gamedistribution.com/games/" target="_blank">https://gamedistribution.com/games/</a>
                 </div>
-                <div class="game-card">
-                    <div class="game-title">Tunnel Road</div>
-                    <a class="game-link" href="https://html5.gamedistribution.com/14e87fab0cbf44b6b3e57ddb77af5941/" target="_blank">https://html5.gamedistribution.com/14e87fab0cbf44b6b3e57ddb77af5941/</a>
-                    <iframe class="game-iframe" src="https://html5.gamedistribution.com/14e87fab0cbf44b6b3e57ddb77af5941/" allowfullscreen></iframe>
+                <div class="platform-item">
+                    <span>Scratch – All Projects:</span>
+                    <a href="https://scratch.mit.edu/explore/projects/all/" target="_blank">https://scratch.mit.edu/explore/projects/all/</a>
                 </div>
-                <div class="game-card">
-                    <div class="game-title">Merge Flowers</div>
-                    <a class="game-link" href="https://html5.gamedistribution.com/2e5863b7cc10444a88f72c81e74502f1/" target="_blank">https://html5.gamedistribution.com/2e5863b7cc10444a88f72c81e74502f1/</a>
-                    <iframe class="game-iframe" src="https://html5.gamedistribution.com/2e5863b7cc10444a88f72c81e74502f1/" allowfullscreen></iframe>
+                <div class="platform-item">
+                    <span>MiniPlay – Most Played:</span>
+                    <a href="https://www.miniplay.com/most-played" target="_blank">https://www.miniplay.com/most-played</a>
                 </div>
-                <div class="game-card">
-                    <div class="game-title">Obby On a Bike</div>
-                    <a class="game-link" href="https://html5.gamedistribution.com/bc2f52c2d9d04e41aee48bef01075d22/" target="_blank">https://html5.gamedistribution.com/bc2f52c2d9d04e41aee48bef01075d22/</a>
-                    <iframe class="game-iframe" src="https://html5.gamedistribution.com/bc2f52c2d9d04e41aee48bef01075d22/" allowfullscreen></iframe>
-                </div>
-                <div class="game-card">
-                    <div class="game-title">Cat Chaos Simulator</div>
-                    <a class="game-link" href="https://html5.gamedistribution.com/427f3a980dfc48e69e4329acdb5b9d8b/" target="_blank">https://html5.gamedistribution.com/427f3a980dfc48e69e4329acdb5b9d8b/</a>
-                    <iframe class="game-iframe" src="https://html5.gamedistribution.com/427f3a980dfc48e69e4329acdb5b9d8b/" allowfullscreen></iframe>
-                </div>
-                <div class="game-card">
-                    <div class="game-title">Snow Rush 3D</div>
-                    <a class="game-link" href="https://html5.gamedistribution.com/e1e32230bdf040d69f4e367015e1c527/" target="_blank">https://html5.gamedistribution.com/e1e32230bdf040d69f4e367015e1c527/</a>
-                    <iframe class="game-iframe" src="https://html5.gamedistribution.com/e1e32230bdf040d69f4e367015e1c527/" allowfullscreen></iframe>
-                </div>
-                <div class="game-card">
-                    <div class="game-title">Example: Custom Game</div>
-                    <a class="game-link" href="https://html5.gamedistribution.com/10f0beef65fe40ccae23194fd95782a8/" target="_blank">https://html5.gamedistribution.com/10f0beef65fe40ccae23194fd95782a8/</a>
-                    <iframe class="game-iframe" src="https://html5.gamedistribution.com/10f0beef65fe40ccae23194fd95782a8/" allowfullscreen></iframe>
-                </div>
-                <div class="game-card">
-                    <div class="game-title">Click Kitty Idle</div>
-                    <a class="game-link" href="https://html5.gamedistribution.com/e93bed2b602c4b5abf3b14f7ab532e18/?gd_sdk_referrer_url=https://gamedistribution.com/games/click-kitty-idle/" target="_blank">https://html5.gamedistribution.com/e93bed2b602c4b5abf3b14f7ab532e18/?gd_sdk_referrer_url=https://gamedistribution.com/games/click-kitty-idle/</a>
-                    <iframe class="game-iframe" src="https://html5.gamedistribution.com/e93bed2b602c4b5abf3b14f7ab532e18/?gd_sdk_referrer_url=https://gamedistribution.com/games/click-kitty-idle/" allowfullscreen></iframe>
+                <div class="platform-item">
+                    <span>iFrame App：</span>
+                    <a href="http://iframe.app/" target="_blank">http://iframe.app/</a>
                 </div>
             </div>
         </section>
+        <section class="section">
+            <h2 class="section-title">📢 Overview</h2>
+            <p>This page collects quick links to leading IFRAME game platforms so you can browse catalogs and add new games efficiently. Explore the resources above to discover experiences that fit your audience.</p>
+        </section>
     </div>
-    
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2024 game studio. All rights reserved.</p>
+            <p>Contact Us | About Us | Developer Collaboration</p>
+        </div>
+    </footer>
     <script>
         // Mobile menu toggle
         document.addEventListener('DOMContentLoaded', function() {
