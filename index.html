@@ -282,6 +282,10 @@
             align-items: center;
         }
 
+        .nav-hidden {
+            display: none !important;
+        }
+
         .nav-links li {
             position: relative;
         }
@@ -688,6 +692,17 @@
             font-size: 0.95rem;
         }
 
+        .seo-section {
+            font-size: 0.9rem;
+            color: #4d4d5f;
+            opacity: 0.9;
+        }
+
+        .seo-section .section-title {
+            font-size: 1.25rem;
+            color: #4d4d5f;
+        }
+
         @media (max-width: 768px) {
             .share-buttons {
                 flex-direction: column;
@@ -993,23 +1008,12 @@
             <a href="#" class="logo">game studio</a>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
-                <li class="dropdown">
-                    <a href="games.html" aria-expanded="false">Games</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="games.html">All Games</a></li>
-                        <li><a href="geometry-dash.html">Geometry Dash</a></li>
-                        <li><a href="extremepamplona.html">Extreme Pamplona</a></li>
-                        <li><a href="brain-teasers.html">Brain Teasers</a></li>
-                        <li><a href="snakes.html">Snakes</a></li>
-                        <li><a href="new-game.html">New Releases</a></li>
-                        <li><a href="game-development.html">Game Development</a></li>
-                        <li><a href="company-ranking.html">Company Rankings</a></li>
-                    </ul>
-                </li>
-                <li><a href="featured-games.html">Featured Games</a></li>
-                <li><a href="marketing-hub.html">Marketing Hub</a></li>
-                <li><a href="https://seodog.cn/" target="_blank" rel="noopener">AI Tools</a></li>
-                <li><a href="about-us.html">About</a></li>
+                <li><a href="games.html">Games</a></li>
+                <li><a href="featured-games.html">Featured</a></li>
+                <li><a href="#searchInput">Search</a></li>
+                <li class="nav-hidden"><a href="marketing-hub.html">Marketing Hub</a></li>
+                <li class="nav-hidden"><a href="https://seodog.cn/" target="_blank" rel="noopener">AI Tools</a></li>
+                <li class="nav-hidden"><a href="about-us.html">About</a></li>
             </ul>
             <div class="search-box">
                 <input type="text" placeholder="Search games..." id="searchInput">
@@ -1025,39 +1029,39 @@
 
 
         <section class="hero" aria-labelledby="heroTitle">
-            <h1 id="heroTitle">Play the Best Free Games Online — No Download Needed!</h1>
-            <p>Discover arcade hits, strategy classics, and bite-sized favorites curated to keep you playing longer. Fresh releases and timeless adventures are ready whenever you are.</p>
-            <a href="#hot-games" class="hero-cta">Start Playing Now</a>
+            <h1 id="heroTitle">Play Free Games Instantly — No Download</h1>
+            <p>Arcade, puzzle, and classic games — ready in seconds.</p>
+            <a href="#hot-games" class="hero-cta">▶ Play Now</a>
         </section>
 
 
         <section class="section hot-games-section" id="hot-games" aria-labelledby="hotGamesTitle">
             <h2 id="hotGamesTitle">🔥 Hot Games This Week</h2>
-            <p class="hot-games-intro">Jump into the titles players are loving right now. Each pick is optimized for instant play so you can explore, compete, and keep your streak going.</p>
+            <p class="hot-games-intro">Most played games. Click and play instantly.</p>
             <div class="hot-games-grid">
                 <article class="hot-game-card">
                     <img src="img-portal/extreme-pamplona-cover.svg" alt="Extreme Pamplona official promo art" loading="lazy">
                     <h3>Extreme Pamplona</h3>
-                    <p>Dodge charging bulls and race through vibrant city streets in this adrenaline-packed runner.</p>
-                    <a class="hot-game-link" href="https://extremepamplona.org/Extreme Pamplona">Play Extreme Pamplona →</a>
+                    <p>Sprint through city streets and dodge charging bulls.</p>
+                    <a class="hot-game-link" href="https://extremepamplona.org/Extreme Pamplona">▶ Play Now</a>
                 </article>
                 <article class="hot-game-card">
                     <img src="img-portal/magicsolitaire.jpg" alt="Mancala Classic board view" loading="lazy">
                     <h3>Mancala Classic</h3>
-                    <p>Master the timeless strategy puzzle with polished visuals and intuitive touch controls.</p>
-                    <a class="hot-game-link" href="games/Mancala/index.html">Play Mancala →</a>
+                    <p>Move stones wisely and outscore rivals in this classic.</p>
+                    <a class="hot-game-link" href="games/Mancala/index.html">▶ Play Now</a>
                 </article>
                 <article class="hot-game-card">
                     <img src="img-portal/fruit-connect-cover.svg" alt="Fruit Connect 3 tropical tile board" loading="lazy">
                     <h3>Fruit Connect</h3>
-                    <p>Match colorful fruits before the timer ends in this fast-paced logic challenge.</p>
-                    <a class="hot-game-link" href="https://fruitconnect.online/" target="_blank" rel="noopener">Play Fruit Connect →</a>
+                    <p>Match fruity tiles fast before the timer runs out.</p>
+                    <a class="hot-game-link" href="https://fruitconnect.online/" target="_blank" rel="noopener">▶ Play Now</a>
                 </article>
                 <article class="hot-game-card">
                     <img src="img-portal/blockdroppingmerge.jpg" alt="Block Breaker neon arcade blocks" loading="lazy">
                     <h3>Block Breaker</h3>
-                    <p>Smash through cascading blocks, trigger combos, and chase high scores in neon arenas.</p>
-                    <a class="hot-game-link" href="https://gamedistribution.com/games/koko-loco-block-blast/">Play Block Breaker →</a>
+                    <p>Blast falling blocks, stack combos, and chase high scores.</p>
+                    <a class="hot-game-link" href="https://gamedistribution.com/games/koko-loco-block-blast/">▶ Play Now</a>
                 </article>
             </div>
         </section>
@@ -1159,7 +1163,7 @@
         </section>
 
         <!-- SEO content area -->
-        <section class="section">
+        <section class="section seo-section">
             <h2 class="section-title">🎮 Game Studio - Professional Game Development Services</h2>
             <div style="line-height: 1.8; color: #555; margin-bottom: 2rem; font-size: 0.95rem;">
                 <p><strong>Game Studio</strong> specializes in <strong>game development</strong>, <strong>production</strong>, and <strong>indie game</strong> design. We deliver end-to-end <strong>game design</strong> services for <strong>mobile</strong>, <strong>PC</strong>, <strong>single-player</strong>, and <strong>online</strong> experiences.</p>
@@ -1177,7 +1181,7 @@
         <section class="section">
             <h2 class="section-title">🧩 Brain Teasers - Puzzle Games</h2>
             <p class="section-description">Keep your mind sharp with puzzles, word challenges, and relaxing logic experiences. Jump to the dedicated Brain Teasers hub to find every brain-bending game in one place.</p>
-            <a class="section-link-button" href="brain-teasers.html">Play Brain Teasers <span aria-hidden="true">🧠</span></a>
+            <a class="section-link-button" href="brain-teasers.html">▶ Play Now</a>
         </section>
     </div>
 
